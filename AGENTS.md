@@ -36,6 +36,9 @@ Tauri v2 桌面应用，双进程架构：
 ## Directory Structure
 
 ```
+.github/workflows/            # CI/CD
+└── release.yml               # 推送 release 分支 → 双架构构建 + GitHub Release
+
 src-tauri/src/                # Rust 后端
 ├── pipeline.rs               # 核心：语音处理流水线状态机
 ├── lib.rs                    # 应用入口、快捷键注册、STT 模型加载

@@ -1,0 +1,29 @@
+[changelog]
+body = """
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group }}
+{% for commit in commits %}\
+- {{ commit.message | split(pat="\n") | first | trim }}
+{% endfor %}
+{% endfor %}"""
+trim = true
+
+[git]
+conventional_commits = true
+filter_unconventional = true
+split_commits = false
+commit_parsers = [
+  { message = "^feat", group = "Features" },
+  { message = "^fix", group = "Bug Fixes" },
+  { message = "^improvement", group = "Feature Improvements" },
+  { message = "^docs", group = "Docs" },
+  { message = "^style", group = "Styling" },
+  { message = "^refactor", group = "Code Refactoring" },
+  { message = "^perf", group = "Performance Improvements" },
+  { message = "^test", group = "Tests" },
+  { message = "^build", group = "Build System" },
+  { message = "^ci", group = "CI" },
+  { message = "^revert", group = "Reverts" },
+  { message = "^types", group = "Types" },
+  { message = "^chore", group = "Chores" },
+]

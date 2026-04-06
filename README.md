@@ -1,105 +1,138 @@
-# Input0
+<div align="right">
+  <strong>English</strong> | <a href="README.zh-CN.md">简体中文</a>
+</div>
 
-Input0 是一款专为 macOS 设计的语音输入工具，功能类似于 Typeless。用户只需按住 Option+Space 快捷键即可开始录音，松开按键后，系统会调用本地 Whisper 模型进行语音转文字，并利用 GPT 大模型对文本进行智能优化，最后自动填入当前活跃的输入框。
+# Input 0
+
+A macOS voice input tool — hold a hotkey to record, release to get polished text auto-pasted into any input field.
+
+Local AI transcription → LLM text optimization → auto-paste. Private, fast, effortless.
 
 <!-- [Screenshot Placeholder: Main App Interface] -->
 
-## 功能特性
+## Features
 
-- 快捷键操作：按住 Option+Space 录音，松开即刻转写。
-- 本地转写：集成 whisper-rs 并在 Metal GPU 上加速运行，确保隐私与性能。
-- AI 文本优化：通过 GPT 接口自动修正语病、优化措辞。
-- 自动上屏：转写优化后的文本自动粘贴至系统当前聚焦的输入框。
-- 多语言支持：支持自动识别或手动指定中文、英文、日文、韩文等多种语言。
-- 灵活配置：可自定义 API Key、Base URL 以及模型参数。
+- **Press & Speak** — Hold `Option+Space` (customizable) to record, release to transcribe + optimize + paste. No window switching needed.
+- **Privacy-First Local STT** — Four AI engines (Whisper, SenseVoice, Paraformer, Moonshine) run entirely on your Mac via Metal GPU. Audio never leaves your device.
+- **AI-Powered Polish** — LLM auto-corrects grammar, removes filler words, and structures your text. Built-in technical term correction (e.g. phonetic Chinese → "React"), with custom vocabulary support.
+- **Auto-Paste Anywhere** — Optimized text is automatically pasted into your active input field — Slack, WeChat, VS Code, browsers, any app.
+- **99+ Languages** — 4 engines, 9 models, covering 99+ languages. The system recommends the best model based on your language.
+- **On-Demand Models** — Lightweight app, download only the STT models you need. One-click switch, progress display, smart recommendations.
+- **ESC to Cancel** — Cancel at any stage (recording, transcribing, optimizing) by pressing ESC.
+- **History** — Review past transcriptions with original and AI-optimized text side by side.
+- **Custom Vocabulary** — Add professional terms, names, and product names. Auto-learning detects corrections and validates via LLM.
+- **Dark & Light Themes** — Dual theme support to match your preference.
+- **Liquid Glass Overlay** — Translucent recording overlay with native macOS blur, non-intrusive to your workflow.
 
-## 技术栈
+## Supported STT Models
 
-- 前端：Tauri v2, React 19, TypeScript, Vite, Tailwind CSS v4, Zustand
-- 后端：Rust, whisper-rs (Metal 加速), cpal (音频采集), rubato (重采样), reqwest (LLM 请求)
+| Model | Size | Best For |
+|-------|------|----------|
+| Whisper Base | ~142 MB | Fast & lightweight, good for daily use |
+| Whisper Small | ~466 MB | Balanced accuracy and speed |
+| Whisper Medium | ~1.4 GB | Excellent multilingual accuracy |
+| Whisper Large v3 | ~2.9 GB | Highest accuracy, 99 languages |
+| Whisper Large v3 Turbo | ~1.5 GB | Top accuracy for English & multilingual |
+| Whisper Large v3 Turbo Q5 | ~547 MB | Quantized high-accuracy, balanced size |
+| SenseVoice Small | ~228 MB | Best for Chinese / Japanese / Korean |
+| Paraformer Chinese | ~217 MB | Chinese-optimized, ultra-fast inference |
+| Moonshine Base (EN) | ~274 MB | English-only, ~5x faster than Whisper |
 
-## 系统要求
+## Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Framework | Tauri v2 (Rust + WebView) |
+| Frontend | React 19 + TypeScript + Vite |
+| Styling | Tailwind CSS v4 |
+| Animation | Framer Motion v12 |
+| State | Zustand |
+| STT | whisper-rs (Metal GPU) + sherpa-onnx |
+| LLM | OpenAI API compatible (GPT-4o-mini default) |
+| Audio | cpal (capture) + rubato (resample) |
+| Paste | arboard (clipboard) + AppleScript (Cmd+V) |
+| Platform | macOS 11+ (Apple Silicon recommended) |
+
+## System Requirements
 
 - macOS 11.0+
-- Apple Silicon 处理器 (推荐以获得最佳 GPU 加速效果)
-- 已安装 cmake (`brew install cmake`)
-- Rust 稳定版
-- Node.js 20+ 及 pnpm
+- Apple Silicon processor (recommended for GPU acceleration)
+- cmake (`brew install cmake`)
+- Rust stable
+- Node.js 20+ and pnpm
 
-## 开发环境搭建
+## Getting Started
 
-1. 克隆项目仓库：
+1. Clone the repository:
    ```bash
    git clone <repository-url>
    cd input0
    ```
 
-2. 安装依赖：
+2. Install dependencies:
    ```bash
    pnpm install
    ```
 
-3. 下载 Whisper 模型文件：
-   项目需要 `ggml-base.bin` 模型文件（约 142MB），请将其放置在 `src-tauri/resources/` 目录下。
+3. Start development server (with hot reload):
    ```bash
-   mkdir -p src-tauri/resources
-   curl -L -o src-tauri/resources/ggml-base.bin https://huggingface.co/ggerganov/whisper.cpp/resolve/main/models/ggml-base.bin
+   pnpm tauri dev
    ```
+   The first run will prompt you to download an STT model from the Settings page.
 
-## 构建与运行
+## Build
 
-### 开发模式
-启动 Tauri 开发服务器，支持热更新：
-```bash
-pnpm tauri dev
-```
-
-### 生产构建
-构建 macOS 应用程序包：
+### Production Build
 ```bash
 MACOSX_DEPLOYMENT_TARGET=11.0 CMAKE_OSX_DEPLOYMENT_TARGET=11.0 pnpm tauri build --bundles app
 ```
 
-### 运行测试
-执行后端逻辑测试：
+### Run Tests
 ```bash
 cd src-tauri && cargo test --lib
 ```
 
-## 项目结构
-
-```text
-input0/
-├── src/                    # React 前端
-│   ├── pages/              # 设置页面、悬浮窗
-│   ├── stores/             # Zustand 状态管理
-│   ├── hooks/              # Tauri 事件钩子
-│   └── components/         # UI 组件
-├── src-tauri/              # Rust 后端
-│   ├── src/
-│   │   ├── audio/          # 音频录制与转换逻辑
-│   │   ├── whisper/        # 本地 STT 转写模块
-│   │   ├── llm/            # GPT 文本优化接口
-│   │   ├── input/          # 剪贴板操作与模拟粘贴
-│   │   ├── config/         # TOML 配置文件处理
-│   │   ├── commands/       # Tauri IPC 指令
-│   │   ├── pipeline.rs     # 语音处理流水线状态机
-│   │   └── lib.rs          # 应用入口与生命周期管理
-│   └── resources/          # Whisper 模型文件 (*.bin)
-└── docs/                   # 设计文档与需求说明
+### Type Check
+```bash
+pnpm build
 ```
 
-## 配置说明
+## Project Structure
 
-应用配置文件位于：
+```
+input0/
+├── src/                    # React frontend
+│   ├── pages/              # Settings window, Overlay window
+│   ├── stores/             # Zustand state management
+│   ├── hooks/              # Tauri event hooks
+│   └── components/         # UI components
+├── src-tauri/              # Rust backend
+│   ├── src/
+│   │   ├── pipeline.rs     # Voice processing pipeline state machine
+│   │   ├── lib.rs          # App entry, hotkey registration, model loading
+│   │   ├── audio/          # Audio capture (cpal) + format conversion (rubato)
+│   │   ├── stt/            # STT backends (Whisper, SenseVoice, Paraformer, Moonshine)
+│   │   ├── models/         # Model registry + download manager
+│   │   ├── llm/            # LLM text optimization (GPT API)
+│   │   ├── input/          # Clipboard + simulated paste
+│   │   ├── config/         # TOML config read/write
+│   │   ├── vocabulary.rs   # Custom vocabulary (JSON persistence)
+│   │   └── commands/       # Tauri IPC commands
+│   └── resources/          # STT model files
+└── docs/                   # Design docs & feature specs
+```
+
+## Configuration
+
+Config file location:
 `~/Library/Application Support/com.input0.dev/config.toml`
 
-主要配置项包括：
-- `api_key`: LLM 服务的 API 密钥。
-- `base_url`: LLM 服务地址。
-- `language`: 转写语言设置 (auto/zh/en/ja/ko/fr/de/es/ru)。
-- `hotkey`: 唤起快捷键。
+Key settings:
+- `api_key` — LLM API key
+- `base_url` — LLM service endpoint
+- `language` — Transcription language (auto/zh/en/ja/ko/fr/de/es/ru)
+- `hotkey` — Activation hotkey
 
 ## License
 
-本项目采用 [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) 许可证。你可以自由分享和修改本项目，但不得用于商业用途。
+This project is licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). You are free to share and adapt, but not for commercial use.

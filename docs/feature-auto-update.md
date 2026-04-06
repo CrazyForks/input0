@@ -105,15 +105,105 @@ Tauri Updater 要求对更新包进行签名验证：
 }
 ```
 
-## 发布流程（CI/CD 配置）
+## CI/CD 自动发布
 
-> 以下步骤需要在 GitHub Actions 或本地手动执行，不在应用代码中实现。
+### GitHub Actions Workflow
 
-1. 生成签名密钥对：`tauri signer generate -w ~/.tauri/myapp.key`
-2. 将公钥填入 `tauri.conf.json` 的 `plugins.updater.pubkey`
-3. 在 CI 中设置 secrets：`TAURI_SIGNING_PRIVATE_KEY` + `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`
-4. 构建命令：`pnpm tauri build --bundles app`（自动生成 `.tar.gz` + `.tar.gz.sig` 签名文件）
-5. 将构建产物和 `latest.json` 上传至 GitHub Release
+`.github/workflows/release.yml` — 推送到 `release` 分支时自动触发。
+
+**构建矩阵**：双架构并行构建，覆盖所有 Mac 用户：
+
+| Runner | Target | 说明 |
+|--------|--------|------|
+| `macos-latest` (Apple Silicon) | `aarch64-apple-darwin` | ARM64 原生构建 |
+| `macos-13` (Intel) | `x86_64-apple-darwin` | x86_64 原生构建 |
+
+**流程**：
+1. `changelog` job（ubuntu）：`git-cliff` 解析 Conventional Commits，生成分类 Release Notes
+2. 两个 `release` job（macOS）并行执行：安装 Rust + Node.js + pnpm + cmake
+3. `tauri-apps/tauri-action@v0` 自动构建、签名、创建 GitHub Release（使用生成的 changelog 作为 Release Notes）
+4. 产物自动上传：`.dmg`、`.app.tar.gz`、`.app.tar.gz.sig`、`latest.json`
+5. `latest.json` 包含双架构平台入口，供 updater 插件检查更新
+
+**Release 命名**：`v{version}`（version 自动读取自 `tauri.conf.json`）
+
+### 前置配置（一次性）
+
+#### 1. 签名密钥
+
+```bash
+# 生成密钥对（已完成）
+pnpm tauri signer generate -w ~/.tauri/myapp.key
+```
+
+- 公钥已填入 `tauri.conf.json` 的 `plugins.updater.pubkey`
+- 私钥文件保存在 `~/.tauri/myapp.key`
+
+#### 2. GitHub Secrets
+
+在 GitHub 仓库 Settings → Secrets and variables → Actions 中添加：
+
+| Secret 名称 | 值 | 说明 |
+|---|---|---|
+| `TAURI_SIGNING_PRIVATE_KEY` | `~/.tauri/myapp.key` 文件完整内容 | Updater 签名私钥 |
+| `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` | 生成密钥时设置的密码 | 私钥密码（无密码则留空） |
+
+> `GITHUB_TOKEN` 由 Actions 自动提供，无需手动配置。
+
+### Conventional Commits 规范
+
+Commit message 需遵循 [Conventional Commits](https://www.conventionalcommits.org/) 格式，Release Notes 会自动按类型分类：
+
+| 前缀 | Release Notes 分类 | 示例 |
+|------|-------------------|------|
+| `feat:` | Features | `feat: add noise reduction` |
+| `fix:` | Bug Fixes | `fix: audio capture crash on M3` |
+| `improvement:` | Feature Improvements | `improvement: faster model loading` |
+| `docs:` | Docs | `docs: update README` |
+| `style:` | Styling | `style: fix sidebar alignment` |
+| `refactor:` | Code Refactoring | `refactor: extract audio pipeline` |
+| `perf:` | Performance Improvements | `perf: reduce memory usage` |
+| `test:` | Tests | `test: add converter unit tests` |
+| `build:` | Build System | `build: upgrade tauri to v2.1` |
+| `ci:` | CI | `ci: add x86_64 build target` |
+| `revert:` | Reverts | `revert: undo hotkey change` |
+| `types:` | Types | `types: fix AppError variants` |
+| `chore:` | Chores | `chore: update dependencies` |
+
+不符合 Conventional Commits 格式的 commit 不会出现在 Release Notes 中。配置文件：`cliff.toml`。
+
+### 发布流程
+
+```
+master (开发) ──push/merge──▸ release (发布) ──auto──▸ GitHub Actions ──▸ GitHub Release
+```
+
+1. 在 `master` 分支完成开发、测试
+2. 更新 `tauri.conf.json` 中的 `version` 字段（如 `0.1.0` → `0.2.0`）
+3. 将 `master` 合并/推送到 `release` 分支
+4. GitHub Actions 自动触发双架构构建
+5. 构建成功后自动创建 GitHub Release（tag: `v0.2.0`），上传所有产物
+6. 已安装用户的 updater 插件检测到 `latest.json` 更新，提示升级
+
+### 发布产物
+
+每次 Release 包含以下资产：
+
+| 文件 | 用途 |
+|------|------|
+| `Input0_x.y.z_aarch64.dmg` | Apple Silicon Mac 安装包 |
+| `Input0_x.y.z_x64.dmg` | Intel Mac 安装包 |
+| `Input0.app.tar.gz` (aarch64) | Apple Silicon updater 更新包 |
+| `Input0.app.tar.gz` (x64) | Intel updater 更新包 |
+| `Input0.app.tar.gz.sig` | 更新包签名文件 |
+| `latest.json` | Updater 版本检查 endpoint |
+
+### 注意事项
+
+- 每次发布前**必须**更新 `tauri.conf.json` 的 `version`，否则 Release tag 冲突会导致构建失败
+- `fail-fast: false`：一个架构构建失败不影响另一个架构
+- `concurrency: release`：重复推送会取消进行中的构建，只保留最新的
+- `macos-13` runner 将来会被 GitHub 弃用，届时可切换为交叉编译或 Universal Binary 方案
 
 ## 文件清单
 
@@ -130,6 +220,8 @@ Tauri Updater 要求对更新包进行签名验证：
 | `src/components/Sidebar.tsx` | 修改 | 动态版本号 + 更新徽标 |
 | `src/components/SettingsPage.tsx` | 修改 | 关于与更新 section |
 | `package.json` | 修改 | 安装前端依赖 |
+| `.github/workflows/release.yml` | 新建 | CI/CD 自动发布 workflow |
+| `cliff.toml` | 新建 | git-cliff Conventional Commits 分类配置 |
 
 ## 实现状态
 
@@ -141,5 +233,6 @@ Tauri Updater 要求对更新包进行签名验证：
 - [x] Sidebar 更新徽标
 - [x] SettingsPage 关于与更新 section
 - [x] TypeScript 类型检查通过
-- [ ] 签名密钥配置（需用户手动设置）
-- [ ] CI/CD 自动发布流程（需用户单独配置）
+- [x] 签名密钥配置（pubkey 已填入 tauri.conf.json）
+- [x] CI/CD 自动发布流程（.github/workflows/release.yml）
+- [ ] GitHub Secrets 配置（TAURI_SIGNING_PRIVATE_KEY + PASSWORD）
