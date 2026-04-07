@@ -126,6 +126,13 @@ export interface Translations {
     userTagsGroupIndustry: string;
     userTagsGroupUseCase: string;
     tagLabels: { [key: string]: string };
+    permissionsTitle: string;
+    accessibilityLabel: string;
+    accessibilityHint: string;
+    accessibilityGranted: string;
+    accessibilityNotGranted: string;
+    accessibilityGrant: string;
+    accessibilityOpenSettings: string;
   };
 
   // VocabularyPage

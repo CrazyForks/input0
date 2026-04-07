@@ -120,6 +120,13 @@ export const zh: Translations = {
     userTagsGroupTechStack: "技术栈",
     userTagsGroupIndustry: "行业",
     userTagsGroupUseCase: "使用场景",
+    permissionsTitle: "权限管理",
+    accessibilityLabel: "辅助功能",
+    accessibilityHint: "用于自动将文本粘贴到当前输入框",
+    accessibilityGranted: "已授权",
+    accessibilityNotGranted: "未授权",
+    accessibilityGrant: "授权",
+    accessibilityOpenSettings: "打开设置",
     tagLabels: {
       // Identity & Domain
       "Developer": "开发者",

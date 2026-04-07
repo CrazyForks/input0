@@ -59,7 +59,7 @@
     "resources": ["resources/*"],
     "createUpdaterArtifacts": true,
     "macOS": {
-      "entitlements": null,
+      "entitlements": "Entitlements.plist",
       "exceptionDomain": "",
       "frameworks": [],
       "providerShortName": null,

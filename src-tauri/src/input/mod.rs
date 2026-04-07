@@ -34,3 +34,72 @@ pub fn get_frontmost_app() -> Option<String> {
 pub fn get_frontmost_app() -> Option<String> {
     None
 }
+
+#[cfg(target_os = "macos")]
+mod accessibility {
+    use std::ffi::c_void;
+
+    #[link(name = "ApplicationServices", kind = "framework")]
+    extern "C" {
+        fn AXIsProcessTrustedWithOptions(options: *const c_void) -> bool;
+    }
+
+    pub fn is_trusted() -> bool {
+        unsafe { AXIsProcessTrustedWithOptions(std::ptr::null()) }
+    }
+
+    /// Show the macOS system prompt directing the user to grant Accessibility.
+    /// The prompt only appears when TCC status is "not determined"; once denied,
+    /// the user must enable it manually in System Settings.
+    pub fn request_with_prompt() -> bool {
+        unsafe {
+            use cocoa::base::id;
+
+            let key: id = msg_send![
+                class!(NSString),
+                stringWithUTF8String: b"AXTrustedCheckOptionPrompt\0".as_ptr()
+            ];
+            let value: id = msg_send![class!(NSNumber), numberWithBool: true];
+            let dict: id = msg_send![
+                class!(NSDictionary),
+                dictionaryWithObject: value
+                forKey: key
+            ];
+            AXIsProcessTrustedWithOptions(dict as *const c_void)
+        }
+    }
+
+    pub fn open_settings() {
+        let _ = std::process::Command::new("open")
+            .arg("x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")
+            .spawn();
+    }
+}
+
+#[cfg(target_os = "macos")]
+pub fn check_accessibility() -> bool {
+    accessibility::is_trusted()
+}
+
+#[cfg(target_os = "macos")]
+pub fn request_accessibility() -> bool {
+    accessibility::request_with_prompt()
+}
+
+#[cfg(target_os = "macos")]
+pub fn open_accessibility_settings() {
+    accessibility::open_settings();
+}
+
+#[cfg(not(target_os = "macos"))]
+pub fn check_accessibility() -> bool {
+    true
+}
+
+#[cfg(not(target_os = "macos"))]
+pub fn request_accessibility() -> bool {
+    true
+}
+
+#[cfg(not(target_os = "macos"))]
+pub fn open_accessibility_settings() {}

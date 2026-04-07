@@ -360,6 +360,14 @@ pub async fn process_audio(recorded: RecordedAudio, app: AppHandle, cancel: Canc
             state: PipelineState::Pasting,
         },
     );
+
+    if !crate::input::check_accessibility() {
+        crate::input::request_accessibility();
+        return Err(AppError::Input(
+            "Accessibility permission required. Please grant access in System Settings → Privacy & Security → Accessibility, then try again.".to_string(),
+        ));
+    }
+
     let paste_text_val = final_text.clone();
     tokio::time::timeout(
         std::time::Duration::from_secs(10),

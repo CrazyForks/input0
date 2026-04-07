@@ -2,7 +2,7 @@ use tauri::command;
 use tauri::AppHandle;
 use tauri::Manager;
 use tauri_plugin_global_shortcut::GlobalShortcutExt;
-use crate::input::{paste, hotkey};
+use crate::input::{self, paste, hotkey};
 use crate::errors::AppError;
 use crate::{config, CurrentShortcut, register_pipeline_shortcut};
 
@@ -83,4 +83,19 @@ pub fn reregister_hotkey(app: AppHandle) -> Result<(), AppError> {
         guard.clone()
     };
     register_pipeline_shortcut(&app, &shortcut)
+}
+
+#[command]
+pub fn check_accessibility_permission() -> bool {
+    input::check_accessibility()
+}
+
+#[command]
+pub fn request_accessibility_permission() -> bool {
+    input::request_accessibility()
+}
+
+#[command]
+pub fn open_accessibility_settings() {
+    input::open_accessibility_settings();
 }

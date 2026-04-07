@@ -161,6 +161,7 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
   const [showApiKey, setShowApiKey] = useState(false);
   const [isRecordingHotkey, setIsRecordingHotkey] = useState(false);
   const focusValueRef = useRef<string>("");
+  const [accessibilityGranted, setAccessibilityGranted] = useState<boolean | null>(null);
 
   const {
     updateAvailable,
@@ -179,6 +180,10 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
 
   useEffect(() => {
     getVersion().then(setAppVersion).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    invoke<boolean>("check_accessibility_permission").then(setAccessibilityGranted).catch(() => {});
   }, []);
 
   const sectionToTab = (section: string | null | undefined): SettingsTab => {
@@ -342,6 +347,46 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
                            className={`inline-block h-4 w-4 transform rounded-full shadow transition-all ${textStructuring ? "translate-x-6 bg-[var(--theme-on-primary)]" : "translate-x-1 bg-white"}`}
                         />
                       </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-xs font-semibold text-[var(--theme-on-surface-variant)] uppercase tracking-wider mb-4">{t.settings.permissionsTitle}</h2>
+                <div className="bg-[var(--theme-surface-container-lowest)] rounded-xl border border-[var(--theme-outline-variant)] overflow-hidden">
+                  <div className="p-4 sm:p-5 flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-medium text-[var(--theme-on-surface)]">{t.settings.accessibilityLabel}</h3>
+                      <p className="mt-1 text-xs text-[var(--theme-on-surface-variant)]">{t.settings.accessibilityHint}</p>
+                    </div>
+                    <div className="ml-4 flex-shrink-0 flex items-center gap-3">
+                      {accessibilityGranted !== null && (
+                        <span className={`text-xs font-medium ${accessibilityGranted ? "text-[var(--theme-status-dot-loaded)]" : "text-[var(--color-error)]"}`}>
+                          {accessibilityGranted ? t.settings.accessibilityGranted : t.settings.accessibilityNotGranted}
+                        </span>
+                      )}
+                      {accessibilityGranted === false && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              const granted = await invoke<boolean>("request_accessibility_permission");
+                              setAccessibilityGranted(granted);
+                            }}
+                            className="milled-button text-xs font-medium px-3 py-1.5 rounded-lg whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-[var(--theme-input-focus-border)]"
+                          >
+                            {t.settings.accessibilityGrant}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => invoke("open_accessibility_settings")}
+                            className="text-xs font-medium text-[var(--theme-primary)] hover:text-[var(--theme-primary-hover)] transition-colors whitespace-nowrap"
+                          >
+                            {t.settings.accessibilityOpenSettings}
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>

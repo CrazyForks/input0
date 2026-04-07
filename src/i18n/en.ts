@@ -121,6 +121,13 @@ export const en: Translations = {
     userTagsGroupIndustry: "Industry",
     userTagsGroupUseCase: "Use Case",
     tagLabels: {},
+    permissionsTitle: "Permissions",
+    accessibilityLabel: "Accessibility",
+    accessibilityHint: "Required for auto-pasting text into active input fields",
+    accessibilityGranted: "Granted",
+    accessibilityNotGranted: "Not Granted",
+    accessibilityGrant: "Grant",
+    accessibilityOpenSettings: "Open Settings",
   },
 
   vocabulary: {
