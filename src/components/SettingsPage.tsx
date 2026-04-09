@@ -189,6 +189,12 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
 
   useEffect(() => {
     invoke<boolean>("check_accessibility_permission").then(setAccessibilityGranted).catch(() => {});
+
+    const onFocus = () => {
+      invoke<boolean>("check_accessibility_permission").then(setAccessibilityGranted).catch(() => {});
+    };
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
   }, []);
 
   useEffect(() => {
