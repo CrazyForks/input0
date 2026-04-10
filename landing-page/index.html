@@ -213,6 +213,28 @@
             transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease !important;
             transition-delay: 0s !important;
         }
+
+        .brand-watermark {
+            font-size: clamp(5rem, 18vw, 14rem);
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            line-height: 1;
+            -webkit-text-fill-color: #eaeaea;
+            -webkit-text-stroke: 1px rgba(180, 180, 180, 0.6);
+            user-select: none;
+            pointer-events: none;
+        }
+        .dark .brand-watermark {
+            -webkit-text-fill-color: #1c1c1c;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+        }
+        .brand-watermark-wrapper {
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, black 100%);
+            padding-top: 2rem;
+            padding-bottom: 0;
+            margin-bottom: -1px;
+        }
 </style>
 </head>
 <body class="selection:bg-primary/10 bg-[#f5f5f5] dark:bg-[#121212] text-[#171717] dark:text-[#e6e6e6]">
@@ -452,6 +474,10 @@
 </div>
 <p class="mt-8 text-neutral-400 text-sm font-medium uppercase tracking-widest" data-i18n="download.subtitle">Supports M1, M2, M3 Macs</p>
 </section>
+<!-- Brand Watermark (above footer) -->
+<div class="w-full overflow-hidden text-center brand-watermark-wrapper">
+    <span class="brand-watermark">Input 0</span>
+</div>
 </main>
 <!-- Footer -->
 <footer class="w-full border-t border-neutral-200/50 dark:border-white/10 bg-neutral-50 dark:bg-neutral-950">
@@ -461,10 +487,8 @@
             </p>
 <div class="flex gap-12 font-sans text-xs uppercase tracking-widest">
 <a class="text-neutral-400 dark:text-neutral-600 hover:text-neutral-900 dark:hover:text-neutral-50 transition-all opacity-80 hover:opacity-100" href="https://github.com/10xChengTu/input0" target="_blank" rel="noopener noreferrer">GitHub</a>
-<a class="text-neutral-400 dark:text-neutral-600 hover:text-neutral-900 dark:hover:text-neutral-50 transition-all opacity-80 hover:opacity-100" href="#">Documentation</a>
-<a class="text-neutral-400 dark:text-neutral-600 hover:text-neutral-900 dark:hover:text-neutral-50 transition-all opacity-80 hover:opacity-100" href="#">Support</a>
 </div>
-</div>
+    </div>
 </footer>
 
 <script>
