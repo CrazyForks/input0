@@ -36,7 +36,7 @@
 
 **原因**: 模型下载 URL、文件校验、后端类型等信息是应用级别的，不应该由用户配置。版本更新时通过代码更新注册表。
 
-存储位置: `~/Library/Application Support/com.input0.dev/models/{model_id}/`
+存储位置: `~/Library/Application Support/com.input0/models/{model_id}/`
 
 ## 错误处理
 

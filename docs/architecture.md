@@ -64,7 +64,7 @@ lib.rs (入口)
 │   hotkey.rs           快捷键解析 + 转换
 │
 ├── config/ ───────────── 配置
-│   mod.rs              TOML 文件读写 (~/.../com.input0.dev/config.toml)
+│   mod.rs              TOML 文件读写 (~/.../com.input0/config.toml)
 │
 ├── errors.rs ─────────── 统一错误类型
 │   AppError: Config | Audio | Whisper | Llm | Input | Io

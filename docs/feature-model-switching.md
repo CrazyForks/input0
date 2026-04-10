@@ -58,7 +58,7 @@ Pipeline (使用当前激活的 backend)
 ### 模型存储路径
 
 ```
-~/Library/Application Support/com.input0.dev/models/
+~/Library/Application Support/com.input0/models/
   ├── whisper-base/
   │   └── ggml-base.bin
   ├── whisper-small/

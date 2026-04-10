@@ -24,7 +24,113 @@ macOS 语音输入工具 — 按住快捷键录音，松开后自动转写、优
 - **暗黑 / 亮色主题** — 双主题支持，匹配你的使用偏好。
 - **液态玻璃 Overlay** — 录音时屏幕底部出现半透明浮层，macOS 原生毛玻璃效果，不遮挡工作区。
 
-## 支持的 STT 模型
+## 系统要求
+
+- macOS 11.0+
+- 推荐 Apple Silicon 处理器（以获得 Metal GPU 加速效果）
+
+## 新手上路
+
+### 1. 安装
+
+从 [GitHub Releases](https://github.com/nicepkg/input0/releases) 下载最新的 `.dmg` 文件，打开后将 **Input 0** 拖入「应用程序」文件夹即可。
+
+> 首次打开时，macOS 可能会弹出安全提示。前往 **系统设置 → 隐私与安全性**，点击 **仍要打开** 即可。
+
+### 2. 授予权限
+
+Input 0 需要以下 macOS 权限才能正常工作，首次启动时会自动弹出请求：
+
+| 权限 | 用途 |
+|---|---|
+| **麦克风** | 录制你的语音 |
+| **辅助功能** | 模拟 Cmd+V 将文本粘贴到其他应用 |
+
+前往 **系统设置 → 隐私与安全性** 授权后，重启应用即可生效。
+
+### 3. 配置 LLM API Key ⚡
+
+> **此步骤为必需。** 如果不配置 API Key，语音转文字仍可正常使用，但 AI 文本优化功能（语法修正、去口头禅、结构化）将被跳过。
+
+1. 打开 Input 0 → 点击侧边栏的 **⚙️ 设置** 图标
+2. 找到 **LLM API** 区域
+3. 填写以下信息：
+
+| 字段 | 说明 | 默认值 |
+|---|---|---|
+| **API Key** | 你的 OpenAI（或兼容服务）API 密钥 | *（空，必须填写）* |
+| **API Base URL** | 服务端点地址 | `https://api.openai.com/v1` |
+| **Model** | LLM 模型名称 | `gpt-4o-mini` |
+
+**使用第三方服务？**（如 Azure OpenAI、Groq、本地 Ollama 或任何 OpenAI 兼容 API）
+- 将 **API Base URL** 改为你的服务商端点
+- 将 **Model** 改为对应的模型名称
+- 填入对应的 **API Key**
+
+点击 **测试连接** 按钮验证 API Key 是否可用。
+
+### 4. 下载 STT 模型 ⚡
+
+> **此步骤为必需。** 你需要至少下载一个模型才能将语音转为文字。
+
+1. 打开 Input 0 → 进入 **设置** → **模型** 区域
+2. 应用会根据你的语言设置推荐最佳模型 — 跟随推荐或自行选择
+3. 点击模型旁边的 **下载** 按钮
+4. 等待下载完成（有进度条显示）
+
+**选哪个模型好？**
+
+| 你说的语言 | 推荐模型 | 大小 |
+|---|---|---|
+| 中文 | SenseVoice Small | ~228 MB |
+| 英语 | Whisper Large v3 Turbo | ~1.5 GB |
+| 日语 / 韩语 | SenseVoice Small | ~228 MB |
+| 多语言混用 | Whisper Large v3 | ~2.9 GB |
+| 追求最快速度 | Moonshine Base（仅英文） | ~274 MB |
+| 追求最小体积 | Whisper Base | ~142 MB |
+
+### 5. 开始使用
+
+1. 按住 **Option+Space**（或你自定义的快捷键）
+2. 自然说话
+3. 松开按键 — 文字自动转写、优化、粘贴到当前输入框
+
+就这么简单！🎉
+
+## 常见问题
+
+### 模型下载失败
+
+如果模型下载失败或卡住：
+
+1. **检查网络** — 模型从 Hugging Face 下载。如果你所在的网络环境无法顺畅访问 Hugging Face，建议使用 VPN 或代理。
+2. **重试** — 关闭并重新打开应用，再次尝试下载。已下载的部分会自动续传，无需从头开始。
+3. **磁盘空间** — 确保有足够的剩余空间。最大的模型（Whisper Large v3）需要约 2.9 GB。
+4. **手动下载** — 作为最后手段，可以手动下载模型文件并放入：
+   ```
+   ~/Library/Application Support/com.input0/models/<模型ID>/
+   ```
+   具体文件名和下载地址请参考 [模型注册表](src-tauri/src/models/registry.rs)。
+
+### 说完话没有文字输出
+
+- 确认已下载并选中了至少一个 STT 模型
+- 检查 **麦克风** 权限是否已授予
+- 检查 **辅助功能** 权限是否已授予（自动粘贴需要此权限）
+
+### AI 优化不生效
+
+- 确认已在设置中正确填写 **API Key**
+- 点击 **测试连接** 检查 API 是否可达
+- 如使用第三方服务，仔细核对 **API Base URL** 和 **Model** 名称
+
+### 快捷键无响应
+
+- 确认没有其他应用占用相同快捷键
+- 尝试在 **设置** 中更换快捷键
+- 更换后重启应用
+
+## 全部 STT 模型
 
 | 模型 | 大小 | 最佳场景 |
 |------|------|---------|
@@ -37,101 +143,6 @@ macOS 语音输入工具 — 按住快捷键录音，松开后自动转写、优
 | SenseVoice Small | ~228 MB | 中文/日文/韩文识别最佳 |
 | Paraformer 中文 | ~217 MB | 中文专用，推理极快 |
 | Moonshine Base (EN) | ~274 MB | 英文专用，速度约为 Whisper 的 5 倍 |
-
-## 技术栈
-
-| 层级 | 技术 |
-|------|------|
-| 框架 | Tauri v2 (Rust + WebView) |
-| 前端 | React 19 + TypeScript + Vite |
-| 样式 | Tailwind CSS v4 |
-| 动画 | Framer Motion v12 |
-| 状态管理 | Zustand |
-| STT 引擎 | whisper-rs (Metal GPU) + sherpa-onnx |
-| LLM | OpenAI API 兼容（默认 GPT-4o-mini） |
-| 音频 | cpal（采集） + rubato（重采样） |
-| 粘贴 | arboard（剪贴板） + AppleScript (Cmd+V) |
-| 平台 | macOS 11+（推荐 Apple Silicon） |
-
-## 系统要求
-
-- macOS 11.0+
-- Apple Silicon 处理器（推荐，以获得最佳 GPU 加速效果）
-- cmake（`brew install cmake`）
-- Rust 稳定版
-- Node.js 20+ 及 pnpm
-
-## 快速开始
-
-1. 克隆项目仓库：
-   ```bash
-   git clone <repository-url>
-   cd input0
-   ```
-
-2. 安装依赖：
-   ```bash
-   pnpm install
-   ```
-
-3. 启动开发服务器（支持热更新）：
-   ```bash
-   pnpm tauri dev
-   ```
-   首次运行需在设置页面下载 STT 模型。
-
-## 构建
-
-### 生产构建
-```bash
-MACOSX_DEPLOYMENT_TARGET=11.0 CMAKE_OSX_DEPLOYMENT_TARGET=11.0 pnpm tauri build --bundles app
-```
-
-### 运行测试
-```bash
-cd src-tauri && cargo test --lib
-```
-
-### 类型检查
-```bash
-pnpm build
-```
-
-## 项目结构
-
-```
-input0/
-├── src/                    # React 前端
-│   ├── pages/              # 设置窗口、Overlay 浮层
-│   ├── stores/             # Zustand 状态管理
-│   ├── hooks/              # Tauri 事件钩子
-│   └── components/         # UI 组件
-├── src-tauri/              # Rust 后端
-│   ├── src/
-│   │   ├── pipeline.rs     # 语音处理流水线状态机
-│   │   ├── lib.rs          # 应用入口、快捷键注册、模型加载
-│   │   ├── audio/          # 音频采集 (cpal) + 格式转换 (rubato)
-│   │   ├── stt/            # STT 后端（Whisper、SenseVoice、Paraformer、Moonshine）
-│   │   ├── models/         # 模型注册表 + 下载管理
-│   │   ├── llm/            # LLM 文本优化（GPT API）
-│   │   ├── input/          # 剪贴板操作 + 模拟粘贴
-│   │   ├── config/         # TOML 配置文件读写
-│   │   ├── vocabulary.rs   # 自定义词汇库（JSON 持久化）
-│   │   └── commands/       # Tauri IPC 命令
-│   └── resources/          # STT 模型文件
-└── docs/                   # 设计文档与需求说明
-```
-
-## 配置说明
-
-配置文件路径：
-`~/Library/Application Support/com.input0.dev/config.toml`
-
-主要配置项：
-- `api_key` — LLM API 密钥
-- `base_url` — LLM 服务地址
-- `language` — 转写语言（auto/zh/en/ja/ko/fr/de/es/ru）
-- `hotkey` — 唤起快捷键
 
 ## 许可证
 

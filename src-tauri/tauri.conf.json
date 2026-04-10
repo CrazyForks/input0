@@ -1,7 +1,7 @@
 {
   "productName": "Input0",
   "version": "0.2.1",
-  "identifier": "com.input0.dev",
+  "identifier": "com.input0",
   "build": {
     "frontendDist": "../dist",
     "devUrl": "http://localhost:1420",

@@ -40,7 +40,7 @@ Pipeline Done → useTauriEvents setLastResult()
 type Vocabulary = Vec<String>;
 ```
 
-存储路径：`~/Library/Application Support/com.input0.dev/vocabulary.json`
+存储路径：`~/Library/Application Support/com.input0/vocabulary.json`
 
 存储格式：JSON 字符串数组，如 `["React", "TypeScript", "Kubernetes"]`
 
