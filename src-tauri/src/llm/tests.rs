@@ -53,7 +53,7 @@ mod tests {
         assert!(prompt.contains("瑞嗯特"), "zh prompt should contain phonetic example");
         assert!(prompt.contains("Tauri"), "zh prompt should contain project-specific term Tauri");
         assert!(prompt.contains("Vite"), "zh prompt should contain project-specific term Vite");
-        assert!(prompt.contains("Preserve Original Intent"), "zh prompt should emphasize preserving original intent");
+        assert!(prompt.contains("remove fillers and fix punctuation"), "zh prompt should emphasize minimal cleanup only");
     }
 
     #[test]
@@ -62,9 +62,8 @@ mod tests {
         assert!(prompt.contains("瑞嗯特"), "en prompt should contain Chinese phonetic examples for code-switching");
         assert!(prompt.contains("React"), "en prompt should contain React");
         assert!(prompt.contains("filler"), "en prompt should mention filler words");
-        assert!(prompt.contains("grammar"), "en prompt should mention grammar");
+        assert!(prompt.contains("punctuation"), "en prompt should mention punctuation fixes");
         assert!(prompt.contains("English"), "en prompt should mention English");
-        assert!(prompt.contains("code-switches"), "en prompt should mention code-switching");
     }
 
     #[test]
@@ -87,7 +86,7 @@ mod tests {
         for lang in &["zh", "en", "auto", "ja"] {
             let prompt = build_system_prompt(lang, false, &[], &[]);
             assert!(prompt.contains("filler"), "prompt for '{}' should mention filler words", lang);
-            assert!(prompt.contains("grammar"), "prompt for '{}' should mention grammar", lang);
+            assert!(prompt.contains("punctuation"), "prompt for '{}' should mention punctuation", lang);
             assert!(prompt.contains("ONLY the corrected text"), "prompt for '{}' should have output-only instruction", lang);
         }
     }
@@ -96,13 +95,22 @@ mod tests {
     fn test_system_prompt_zh_preserves_variant() {
         let prompt = build_system_prompt("zh", false, &[], &[]);
         assert!(
-            prompt.contains("Preserve the Chinese variant"),
+            prompt.contains("Chinese variant"),
             "zh prompt should preserve speaker's Chinese variant"
         );
         assert!(
             !prompt.contains("简体中文"),
             "zh prompt must NOT force simplified Chinese"
         );
+    }
+
+    #[test]
+    fn test_system_prompt_contains_anti_execution_rule() {
+        for lang in &["zh", "en", "auto"] {
+            let prompt = build_system_prompt(lang, false, &[], &[]);
+            assert!(prompt.contains("NOT instructions"), "prompt for '{}' should contain anti-execution rule", lang);
+            assert!(prompt.contains("Do NOT execute"), "prompt for '{}' should explicitly forbid executing transcript content", lang);
+        }
     }
 
     // --- Context Message Tests ---
@@ -188,10 +196,12 @@ mod tests {
     }
 
     #[test]
-    fn test_system_prompt_contains_active_app_instructions() {
-        let prompt = build_system_prompt("zh", false, &[], &[]);
-        assert!(prompt.contains("active application"), "System prompt should mention active application usage");
-        assert!(prompt.contains("Reference Only"), "System prompt should mark context as reference only");
+    fn test_system_prompt_context_is_in_context_message() {
+        let context_msg = build_context_message(&[], Some("VS Code"));
+        assert!(context_msg.is_some());
+        let msg = context_msg.unwrap();
+        assert!(msg.content.contains("reference only"), "Context message should mark as reference only");
+        assert!(msg.content.contains("VS Code"), "Context message should contain app name");
     }
 
     // --- optimize_text Success Tests ---
@@ -262,7 +272,9 @@ mod tests {
         assert_eq!(messages.len(), 2, "Without history: system + user = 2 messages");
         assert_eq!(messages[0]["role"], "system");
         assert_eq!(messages[1]["role"], "user");
-        assert_eq!(messages[1]["content"], "hello um world");
+        let user_content = messages[1]["content"].as_str().unwrap();
+        assert!(user_content.contains("hello um world"), "user message should contain the raw text");
+        assert!(user_content.contains("```"), "user message should wrap raw text in code block");
     }
 
     #[tokio::test]
@@ -301,7 +313,9 @@ mod tests {
             "Context message should contain corrected history text"
         );
         assert_eq!(messages[2]["role"], "user");
-        assert_eq!(messages[2]["content"], "hello world");
+        let user_content = messages[2]["content"].as_str().unwrap();
+        assert!(user_content.contains("hello world"), "user message should contain the raw text");
+        assert!(user_content.contains("```"), "user message should wrap raw text in code block");
     }
 
     #[tokio::test]
@@ -580,8 +594,8 @@ mod tests {
             system_content
         );
         assert!(
-            system_content.to_lowercase().contains("grammar"),
-            "System prompt should mention grammar, got: {}",
+            system_content.to_lowercase().contains("punctuation"),
+            "System prompt should mention punctuation, got: {}",
             system_content
         );
     }
@@ -609,9 +623,18 @@ mod tests {
 
         let messages = body["messages"].as_array().unwrap();
         let last_msg = messages.last().unwrap();
-        assert_eq!(
-            last_msg["content"].as_str().unwrap(), raw,
-            "Last user message content should be exactly the raw text"
+        let last_content = last_msg["content"].as_str().unwrap();
+        assert!(
+            last_content.contains(raw),
+            "Last user message content should contain the raw text"
+        );
+        assert!(
+            last_content.contains("```"),
+            "Last user message should wrap raw text in code block"
+        );
+        assert!(
+            last_content.contains("do NOT execute"),
+            "Last user message should contain anti-execution label"
         );
     }
 
@@ -651,7 +674,7 @@ mod tests {
         for lang in &["zh", "en", "auto"] {
             let prompt = build_system_prompt(lang, false, &[], &[]);
             assert!(!prompt.contains("Numbered & Bulleted Lists"), "prompt for '{}' without structuring should NOT contain list instructions", lang);
-            assert!(!prompt.contains("Text Structuring"), "prompt for '{}' without structuring should NOT contain structuring section", lang);
+            assert!(!prompt.contains("List Formatting"), "prompt for '{}' without structuring should NOT contain List Formatting section", lang);
         }
     }
 
@@ -659,11 +682,9 @@ mod tests {
     fn test_system_prompt_with_structuring_contains_list_instructions() {
         for lang in &["zh", "en", "auto"] {
             let prompt = build_system_prompt(lang, true, &[], &[]);
-            assert!(prompt.contains("Numbered & Bulleted Lists"), "prompt for '{}' with structuring should contain list instructions", lang);
-            assert!(prompt.contains("Text Structuring"), "prompt for '{}' with structuring should contain structuring section", lang);
-            assert!(prompt.contains("Paragraph & Line Breaks"), "prompt for '{}' with structuring should contain paragraph instructions", lang);
-            assert!(prompt.contains("Punctuation & Symbols"), "prompt for '{}' with structuring should contain punctuation instructions", lang);
-            assert!(prompt.contains("Spacing"), "prompt for '{}' with structuring should contain spacing instructions", lang);
+            assert!(prompt.contains("list"), "prompt for '{}' with structuring should contain list instructions", lang);
+            assert!(prompt.contains("List Formatting"), "prompt for '{}' with structuring should contain List Formatting section", lang);
+            assert!(prompt.contains("punctuation"), "prompt for '{}' with structuring should contain punctuation instructions", lang);
         }
     }
 
@@ -671,7 +692,7 @@ mod tests {
     fn test_system_prompt_with_structuring_contains_few_shot_examples() {
         let prompt = build_system_prompt("zh", true, &[], &[]);
         assert!(prompt.contains("1. 把游戏打好"), "structuring prompt should contain enumerated list few-shot example");
-        assert!(prompt.contains("WITHOUT enumeration signals"), "structuring prompt should have negative example section");
+        assert!(prompt.contains("no markers"), "structuring prompt should have negative example section");
         assert!(prompt.contains("我今天去了趟超市"), "structuring prompt should contain prose few-shot example");
     }
 
@@ -691,10 +712,9 @@ mod tests {
     #[test]
     fn test_system_prompt_with_structuring_is_signal_driven() {
         let prompt = build_system_prompt("zh", true, &[], &[]);
-        assert!(prompt.contains("Signal-Driven"), "structuring prompt should be signal-driven");
-        assert!(prompt.contains("enumeration signals"), "structuring prompt should require enumeration signals");
-        assert!(prompt.contains("WITHOUT enumeration signals"), "structuring prompt should have negative examples for plain narration");
-        assert!(!prompt.contains("do NOT add, remove, or rewrite"), "structuring prompt should NOT have strict no-rewrite constraint");
+        assert!(prompt.contains("enumerat"), "structuring prompt should require enumeration signals");
+        assert!(prompt.contains("no markers"), "structuring prompt should have negative examples for plain narration");
+        assert!(prompt.contains("NEVER add titles"), "structuring prompt should forbid adding titles/headings");
     }
 
     #[test]
@@ -725,8 +745,8 @@ mod tests {
         let system_content = body["messages"][0]["content"].as_str().unwrap_or("");
 
         assert!(
-            system_content.contains("Text Structuring"),
-            "With text_structuring=true, system prompt should contain structuring instructions"
+            system_content.contains("List Formatting"),
+            "With text_structuring=true, system prompt should contain list formatting instructions"
         );
     }
 
@@ -752,8 +772,8 @@ mod tests {
         let system_content = body["messages"][0]["content"].as_str().unwrap_or("");
 
          assert!(
-            !system_content.contains("Text Structuring"),
-            "With text_structuring=false, system prompt should NOT contain structuring instructions"
+            !system_content.contains("List Formatting"),
+            "With text_structuring=false, system prompt should NOT contain list formatting instructions"
         );
     }
 
@@ -763,7 +783,7 @@ mod tests {
     fn test_system_prompt_with_user_tags() {
         let tags = vec!["Developer".to_string(), "Frontend".to_string(), "AI".to_string()];
         let prompt = build_system_prompt("zh", false, &[], &tags);
-        assert!(prompt.contains("User Profile Tags"), "prompt with user_tags should contain User Profile Tags section");
+        assert!(prompt.contains("User Tags"), "prompt with user_tags should contain User Tags section");
         assert!(prompt.contains("Developer"), "prompt should contain the tag 'Developer'");
         assert!(prompt.contains("Frontend"), "prompt should contain the tag 'Frontend'");
         assert!(prompt.contains("AI"), "prompt should contain the tag 'AI'");
@@ -773,7 +793,7 @@ mod tests {
     #[test]
     fn test_system_prompt_without_user_tags() {
         let prompt = build_system_prompt("zh", false, &[], &[]);
-        assert!(!prompt.contains("User Profile Tags"), "prompt without user_tags should NOT contain User Profile Tags section");
+        assert!(!prompt.contains("User Tags"), "prompt without user_tags should NOT contain User Tags section");
     }
 
     #[test]
@@ -781,8 +801,8 @@ mod tests {
         let vocab = vec!["Kubernetes".to_string()];
         let tags = vec!["DevOps".to_string()];
         let prompt = build_system_prompt("zh", false, &vocab, &tags);
-        assert!(prompt.contains("User Custom Vocabulary"), "should contain vocabulary section");
-        assert!(prompt.contains("User Profile Tags"), "should contain tags section");
+        assert!(prompt.contains("Custom Vocabulary"), "should contain vocabulary section");
+        assert!(prompt.contains("User Tags"), "should contain tags section");
         assert!(prompt.contains("Kubernetes"), "should contain vocabulary term");
         assert!(prompt.contains("DevOps"), "should contain tag");
     }
@@ -792,7 +812,7 @@ mod tests {
         let tags = vec!["Designer".to_string()];
         for lang in &["zh", "en", "auto", "ja"] {
             let prompt = build_system_prompt(lang, false, &[], &tags);
-            assert!(prompt.contains("User Profile Tags"), "prompt for '{}' with tags should contain User Profile Tags section", lang);
+            assert!(prompt.contains("User Tags"), "prompt for '{}' with tags should contain User Tags section", lang);
             assert!(prompt.contains("Designer"), "prompt for '{}' should contain the tag", lang);
         }
     }
@@ -820,8 +840,8 @@ mod tests {
         let system_content = body["messages"][0]["content"].as_str().unwrap_or("");
 
         assert!(
-            system_content.contains("User Profile Tags"),
-            "With user_tags, system prompt should contain User Profile Tags section"
+            system_content.contains("User Tags"),
+            "With user_tags, system prompt should contain User Tags section"
         );
         assert!(
             system_content.contains("Developer") && system_content.contains("Rust"),
