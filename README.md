@@ -4,11 +4,13 @@
 
 # Input 0
 
+> 🏗️ This project's AI agent harness is built with [Harness Engineering](https://github.com/10xChengTu/harness-engineering).
+
 A macOS voice input tool — hold a hotkey to record, release to get polished text auto-pasted into any input field.
 
 Local AI transcription → LLM text optimization → auto-paste. Private, fast, effortless.
 
-<!-- [Screenshot Placeholder: Main App Interface] -->
+![Input 0 Main Interface](images/screenshot.png)
 
 ## Features
 
@@ -22,8 +24,6 @@ Local AI transcription → LLM text optimization → auto-paste. Private, fast, 
 - **History** — Review past transcriptions with original and AI-optimized text side by side.
 - **Custom Vocabulary** — Add professional terms, names, and product names. Auto-learning detects corrections and validates via LLM.
 - **Dark & Light Themes** — Dual theme support to match your preference.
-- **Liquid Glass Overlay** — Translucent recording overlay with native macOS blur, non-intrusive to your workflow.
-
 ## System Requirements
 
 - macOS 11.0+

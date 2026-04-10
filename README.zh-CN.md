@@ -4,11 +4,13 @@
 
 # Input 0
 
+> 🏗️ 本项目使用 [Harness Engineering](https://github.com/10xChengTu/harness-engineering) 进行 AI Agent Harness 搭建。
+
 macOS 语音输入工具 — 按住快捷键录音，松开后自动转写、优化、粘贴到当前输入框。
 
 本地 AI 转录 → LLM 文本优化 → 自动粘贴。隐私、快速、零摩擦。
 
-<!-- [Screenshot Placeholder: Main App Interface] -->
+![Input 0 主界面](images/screenshot.png)
 
 ## 功能特性
 
@@ -22,8 +24,6 @@ macOS 语音输入工具 — 按住快捷键录音，松开后自动转写、优
 - **历史记录** — 查看最近的语音转录原文与 AI 优化结果，支持对比和一键复制。
 - **自定义词汇库** — 手动添加专业术语、人名、产品名，AI 转录优化时优先使用。支持自动学习，LLM 验证后自动加入词汇库。
 - **暗黑 / 亮色主题** — 双主题支持，匹配你的使用偏好。
-- **液态玻璃 Overlay** — 录音时屏幕底部出现半透明浮层，macOS 原生毛玻璃效果，不遮挡工作区。
-
 ## 系统要求
 
 - macOS 11.0+
