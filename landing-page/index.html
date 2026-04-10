@@ -284,10 +284,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="w-5 h-5 flex-shrink-0" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
                     <span data-i18n="hero.download">Download for macOS</span>
                 </a>
-<button class="w-full md:w-auto px-8 py-4 bg-white dark:bg-[#252525] text-primary dark:text-[#e6e6e6] font-semibold rounded-xl transition-all relative cursor-default opacity-80">
-                    <span data-i18n="hero.otherVersions">Other Versions</span>
-                    <span class="absolute -top-2.5 -right-3 px-2 py-0.5 bg-neutral-700 dark:bg-neutral-300 text-white dark:text-neutral-900 text-[10px] font-bold uppercase tracking-wider rounded-full whitespace-nowrap">Coming Soon</span>
-                </button>
+<a href="https://github.com/10xChengTu/input0" target="_blank" rel="noopener noreferrer" class="w-full md:w-auto px-8 py-4 bg-white dark:bg-[#252525] text-neutral-500 dark:text-neutral-400 font-semibold rounded-xl transition-all hover:bg-neutral-100 dark:hover:bg-[#303030] active:scale-95 flex items-center justify-center gap-3 no-underline">
+                    <svg viewBox="0 0 24 24" class="w-6 h-6 flex-shrink-0" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                    <span id="github-stars" class="text-lg font-semibold hidden" data-i18n="hero.github"></span>
+                </a>
 </div>
 </section>
 <!-- Product Preview (Liquid Glass UI) -->
@@ -601,7 +601,6 @@ document.addEventListener('DOMContentLoaded', () => {
             "hero.subtitle": "Speak your thoughts and let Input 0 do the rest. Native macOS integration meets high-fidelity AI transcription. Speak. It's done.",
             "hero.download": "Download for macOS",
             "hero.action": "See in Action",
-            "hero.otherVersions": "Other Versions",
             "glass.active": "Transcription Active",
             "glass.processing": "Processing high-fidelity voice stream...",
             "glass.gpu": "Metal GPU Active",
@@ -656,7 +655,6 @@ document.addEventListener('DOMContentLoaded', () => {
             "hero.subtitle": "自然说话，剩下的交给 Input 0。macOS 原生级集成，与高保真 AI 转录完美结合。说出来，就写好了。",
             "hero.download": "下载 macOS 版",
             "hero.action": "查看演示",
-            "hero.otherVersions": "其他版本",
             "glass.active": "正在转录",
             "glass.processing": "正在处理高保真语音流...",
             "glass.gpu": "Metal GPU 加速中",
@@ -778,6 +776,24 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize i18n on load
     updateI18n();
+
+    // Fetch GitHub star count
+    (function fetchGitHubStars() {
+        fetch('https://api.github.com/repos/10xChengTu/input0')
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.stargazers_count !== undefined) {
+                    var count = data.stargazers_count;
+                    var formatted = count >= 1000 ? (count / 1000).toFixed(1) + 'K' : String(count);
+                    var el = document.getElementById('github-stars');
+                    if (el) {
+                        el.textContent = formatted;
+                        el.classList.remove('hidden');
+                    }
+                }
+            })
+            .catch(function() {}); // Silent fail — button still works without star count
+    })();
 
     // Hero Waveform Animation (Canvas, matching desktop WaveformAnimation.tsx)
     (function initHeroWaveform() {
