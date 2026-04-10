@@ -39,8 +39,7 @@
 <title>Input 0 — Zero typing. Pure voice.</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -135,10 +134,7 @@
             background: radial-gradient(circle at center, #ffffff 0%, #e8e8e8 100%);
             color: #171717;
         }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-    
+
         html { scroll-behavior: smooth; scroll-padding-top: 100px; }
         .animate-on-scroll {
             opacity: 0;
@@ -236,18 +232,21 @@
 <span class="text-lg font-semibold tracking-tighter text-neutral-900 dark:text-neutral-50">Input 0</span>
 </div>
 <div id="nav-links" class="hidden md:flex items-center gap-8 font-sans text-sm font-medium tracking-tight">
-<a class="text-neutral-900 dark:text-neutral-50 font-semibold transition-colors" href="#features" data-i18n="nav.features">Features</a>
-<a class="text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors" href="#process" data-i18n="nav.process">Process</a>
-<a class="text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors" href="#download" data-i18n="nav.download">Download</a>
+<a class="py-2 md:py-0 text-neutral-900 dark:text-neutral-50 font-semibold transition-colors" href="#features" data-i18n="nav.features">Features</a>
+<a class="py-2 md:py-0 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors" href="#process" data-i18n="nav.process">Process</a>
+<a class="py-2 md:py-0 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors" href="#download" data-i18n="nav.download">Download</a>
 </div>
 <div class="flex items-center gap-1">
-    <button id="lang-toggle" class="flex items-center justify-center w-9 h-9 rounded-lg text-sm font-bold text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50 transition-colors cursor-pointer">
+    <button id="lang-toggle" class="flex items-center justify-center w-11 h-11 md:w-9 md:h-9 rounded-lg text-sm font-bold text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50 transition-colors cursor-pointer">
         EN
     </button>
-    <button id="theme-toggle" class="flex items-center justify-center w-9 h-9 rounded-lg material-symbols-outlined text-xl text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50 transition-colors cursor-pointer">
-        light_mode
+    <button id="theme-toggle" class="flex items-center justify-center w-11 h-11 md:w-9 md:h-9 rounded-lg text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50 transition-colors cursor-pointer">
+        <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/></svg>
+        <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 hidden"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"/></svg>
     </button>
-    <button id="mobile-menu-btn" class="md:hidden material-symbols-outlined text-2xl text-neutral-500 dark:text-neutral-400 cursor-pointer">menu</button>
+    <button id="mobile-menu-btn" class="md:hidden flex items-center justify-center w-11 h-11 text-neutral-500 dark:text-neutral-400 cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+    </button>
     <a href="https://github.com/10xChengTu/input0" target="_blank" rel="noopener noreferrer" class="hidden md:flex items-center justify-center w-9 h-9 rounded-lg text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50 transition-colors cursor-pointer" aria-label="GitHub">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
     </a>
@@ -259,7 +258,7 @@
 <!-- Hero Section -->
 <section class="max-w-7xl mx-auto px-6 text-center">
 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high dark:bg-surface-container-high-dark mb-8">
-<span class="material-symbols-outlined text-[16px]">verified</span>
+<span class="inline-flex items-center justify-center w-4 h-4"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0 1 12 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 0 1 3.498 1.307 4.491 4.491 0 0 1 1.307 3.497A4.49 4.49 0 0 1 21.75 12a4.49 4.49 0 0 1-1.549 3.397 4.491 4.491 0 0 1-1.307 3.497 4.491 4.491 0 0 1-3.497 1.307A4.49 4.49 0 0 1 12 21.75a4.49 4.49 0 0 1-3.397-1.549 4.49 4.49 0 0 1-3.498-1.306 4.491 4.491 0 0 1-1.307-3.498A4.49 4.49 0 0 1 2.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 0 1 1.307-3.497 4.49 4.49 0 0 1 3.497-1.307Zm7.007 6.387a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/></svg></span>
 <span class="text-xs font-semibold uppercase tracking-widest text-on-surface-variant dark:text-on-surface-variant-dark" data-i18n="hero.badge">Built with Rust + Metal</span>
 </div>
 <h1 class="text-[3.5rem] md:text-[5rem] font-extrabold tracking-tighter leading-[1.05] mb-8 text-neutral-900 dark:text-white" data-i18n="hero.title">
@@ -275,18 +274,18 @@
                 </a>
 <a href="https://github.com/10xChengTu/input0" target="_blank" rel="noopener noreferrer" class="w-full md:w-auto px-8 py-4 bg-white dark:bg-[#252525] text-neutral-500 dark:text-neutral-400 font-semibold rounded-xl transition-all hover:bg-neutral-100 dark:hover:bg-[#303030] active:scale-95 flex items-center justify-center gap-3 no-underline">
                     <svg viewBox="0 0 24 24" class="w-6 h-6 flex-shrink-0" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-                    <span id="github-stars" class="text-lg font-semibold hidden" data-i18n="hero.github"></span>
+                    <span id="github-stars" class="text-lg font-semibold min-w-[3ch] text-center tabular-nums" data-i18n="hero.github">0</span>
                 </a>
 </div>
 </section>
 <!-- Product Preview (Liquid Glass UI) -->
 <section class="max-w-6xl mx-auto px-6 mt-24 relative">
-<div class="aspect-[16/10] bg-surface-container-low dark:bg-surface-container-low-dark rounded-2xl p-4 md:p-12 relative overflow-hidden">
+<div class="md:aspect-[16/10] bg-surface-container-low dark:bg-surface-container-low-dark rounded-2xl p-4 md:p-12 relative overflow-hidden">
 <div class="absolute inset-0 z-0">
 <img class="w-full h-full object-cover opacity-30 mix-blend-overlay" data-alt="Soft ethereal background with minimal abstract fluid shapes in neutral beige and cream tones for high-end macOS UI" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5bUemS9Lb6Xez3xzFb0ZM0ocxmBBXvtAKfD0gCM-5iMzR8xWEgnCO3Fg2V21Cr16G2dHHdYGtaX4Wnx3NDVRI2zAleFa7TqxYBqcVoOxKSApvUAE-t0mUAgakow1YA1wKM30UgOmo11OU2u1suJ9mZx5Ay11nWqE80pWkwK5HuXn7Rov9V6lFmg38KdYoEpSEFSg-xkN1W34IDwi7IfoQf928CMn2F_w3jFnxsVauN5H2Z3KFozvgAAEnCBvZ7bk8n0M1R-38ry0"/>
 </div>
 <!-- Floating Glass UI Mockup -->
-<div class="relative z-10 w-full h-full glass-panel rounded-xl shadow-2xl flex flex-col p-6">
+<div class="relative z-10 w-full h-full glass-panel rounded-xl shadow-2xl flex flex-col p-4 md:p-6">
 <div class="flex items-center justify-between mb-6">
 <div class="flex gap-2">
 <div class="w-3 h-3 rounded-full bg-neutral-300"></div>
@@ -298,7 +297,7 @@
                         </div>
 </div>
 <div class="flex-grow flex flex-col justify-center">
-<p id="typing-text" data-text="&quot;Let's schedule a meeting for next Tuesday to discuss the new architectural system benchmarks...&quot;" class="text-2xl md:text-4xl font-medium text-neutral-800 dark:text-neutral-200 leading-tight min-h-[80px] md:min-h-[96px]">
+<p id="typing-text" data-text="&quot;Let's schedule a meeting for next Tuesday to discuss the new architectural system benchmarks...&quot;" class="text-lg sm:text-2xl md:text-4xl font-medium text-neutral-800 dark:text-neutral-200 leading-tight min-h-[60px] md:min-h-[96px]">
                         </p>
 <div class="mt-4 flex items-center gap-3">
 <div class="flex items-center h-8">
@@ -319,10 +318,10 @@
 <span class="text-[11px] text-neutral-700 dark:text-neutral-200 ai-text-shimmer truncate" data-i18n="glass.polishedText">"Let's schedule a meeting for next Tuesday to discuss the new React system benchmarks."</span>
 </div>
 </div>
-<div class="mt-auto flex items-center justify-between pt-6 border-t border-black/5">
-<div class="flex items-center gap-4 text-xs font-medium text-neutral-500">
-<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">memory</span> <span data-i18n="glass.gpu">Metal GPU Active</span></span>
-<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">lock</span> <span data-i18n="glass.local">Voice Stays Local</span></span>
+<div class="mt-auto flex flex-wrap items-center justify-between gap-4 pt-4 md:pt-6 border-t border-black/5">
+<div class="flex flex-wrap items-center gap-2 md:gap-4 text-[10px] md:text-xs font-medium text-neutral-500">
+<span class="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 md:w-3.5 md:h-3.5 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Z"/></svg> <span data-i18n="glass.gpu">Metal GPU Active</span></span>
+<span class="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 md:w-3.5 md:h-3.5 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg> <span data-i18n="glass.local">Voice Stays Local</span></span>
 </div>
 <div class="flex items-center gap-2">
 <span class="px-2 py-1 bg-neutral-100 dark:bg-white/10 rounded text-[10px] font-mono">⌥ Space</span>
@@ -338,7 +337,7 @@
 <!-- Press & Speak -->
 <div class="md:col-span-2 bg-surface-container-lowest dark:bg-surface-container-lowest-dark p-8 rounded-xl flex flex-col justify-between min-h-[300px] feature-card animate-on-scroll">
 <div>
-<span class="material-symbols-outlined text-3xl mb-6">keyboard_command_key</span>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 mb-6"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3M3.375 3h17.25c.621 0 1.125.504 1.125 1.125v15.75c0 .621-.504 1.125-1.125 1.125H3.375c-.621 0-1.125-.504-1.125-1.125V4.125c0-.621.504-1.125 1.125-1.125Z"/></svg>
 <h3 class="text-xl font-semibold mb-2 dark:text-white" data-i18n="feat.1.title">Press &amp; Speak</h3>
 <p class="text-on-surface-variant dark:text-on-surface-variant-dark leading-relaxed max-w-sm" data-i18n="feat.1.desc">Global hotkey integration. No window switching, no friction. Just hold and talk from anywhere in macOS.</p>
 </div>
@@ -351,7 +350,7 @@
 <!-- Local AI -->
 <div class="bg-primary dark:bg-white text-white dark:text-[#171717] p-8 rounded-xl flex flex-col justify-between feature-card animate-on-scroll">
 <div>
-<span class="material-symbols-outlined text-3xl mb-6" data-weight="fill">security</span>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 mb-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg>
 <h3 class="text-xl font-semibold mb-2" data-i18n="feat.2.title">Privacy-First Architecture</h3>
 <p class="text-neutral-400 dark:text-neutral-500 leading-relaxed" data-i18n="feat.2.desc">Voice transcription runs entirely on your Mac via Metal GPU — your audio never leaves the device. Text optimization connects to your own LLM API, giving you full control over your data pipeline.</p>
 </div>
@@ -359,19 +358,19 @@
 </div>
 <!-- AI Polish -->
 <div class="bg-surface-container-lowest dark:bg-surface-container-lowest-dark p-8 rounded-xl feature-card animate-on-scroll">
-<span class="material-symbols-outlined text-3xl mb-6">auto_fix_high</span>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 mb-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"/></svg>
 <h3 class="text-xl font-semibold mb-2 dark:text-white" data-i18n="feat.3.title">AI Polish</h3>
 <p class="text-on-surface-variant dark:text-on-surface-variant-dark leading-relaxed" data-i18n="feat.3.desc">LLM-powered optimization removes filler words, fixes grammar, and corrects 40+ technical terms by pronunciation (e.g., 'rui en te' → 'React'). Context-aware with 10-message history.</p>
 </div>
 <!-- Auto-Paste -->
 <div class="bg-surface-container-lowest dark:bg-surface-container-lowest-dark p-8 rounded-xl feature-card animate-on-scroll">
-<span class="material-symbols-outlined text-3xl mb-6">content_paste_go</span>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 mb-6"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9.334a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"/></svg>
 <h3 class="text-xl font-semibold mb-2 dark:text-white" data-i18n="feat.4.title">Auto-Paste</h3>
 <p class="text-on-surface-variant dark:text-on-surface-variant-dark leading-relaxed" data-i18n="feat.4.desc">Transcribe and inject text directly into Slack, VS Code, or your browser without a single click.</p>
 </div>
 <!-- Language Support -->
 <div class="bg-surface-container-lowest dark:bg-surface-container-lowest-dark p-8 rounded-xl feature-card animate-on-scroll">
-<span class="material-symbols-outlined text-3xl mb-6">language</span>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 mb-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"/></svg>
 <h3 class="text-xl font-semibold mb-2 dark:text-white" data-i18n="feat.5.title">Multi-Language</h3>
 <p class="text-on-surface-variant dark:text-on-surface-variant-dark leading-relaxed mb-4" data-i18n="feat.5.desc">4 AI engines with 9 models covering 99+ languages. Smart recommendation picks the best model for your language automatically.</p>
 <div class="flex flex-wrap gap-2">
@@ -387,10 +386,10 @@
 </div>
 <!-- 4 AI Engines -->
 <div class="md:col-span-2 bg-surface-container-lowest dark:bg-surface-container-lowest-dark p-8 rounded-xl feature-card animate-on-scroll">
-<span class="material-symbols-outlined text-3xl mb-6">model_training</span>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 mb-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 0-6.23.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/></svg>
 <h3 class="text-xl font-semibold mb-2 dark:text-white" data-i18n="feat.6.title">4 AI Engines. 9 Models.</h3>
 <p class="text-on-surface-variant dark:text-on-surface-variant-dark leading-relaxed mb-6 max-w-lg" data-i18n="feat.6.desc">Not just Whisper. Choose the best engine for your language and speed requirements. Download only what you need.</p>
-<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
 <div class="px-3 py-3 bg-surface-container-low dark:bg-surface-container-low-dark rounded-lg">
 <div class="text-sm font-bold dark:text-white" data-i18n="feat.6.engine1">Whisper</div>
 <div class="text-[11px] text-on-surface-variant dark:text-on-surface-variant-dark mt-1" data-i18n="feat.6.engine1.desc">6 models · 99 languages</div>
@@ -411,7 +410,7 @@
 </div>
 <!-- Custom Vocabulary -->
 <div class="bg-surface-container-lowest dark:bg-surface-container-lowest-dark p-8 rounded-xl feature-card animate-on-scroll">
-<span class="material-symbols-outlined text-3xl mb-6">dictionary</span>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 mb-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/></svg>
 <h3 class="text-xl font-semibold mb-2 dark:text-white" data-i18n="feat.7.title">Custom Vocabulary</h3>
 <p class="text-on-surface-variant dark:text-on-surface-variant-dark leading-relaxed" data-i18n="feat.7.desc">Add your own terms — names, brands, jargon. The AI also auto-learns from your corrections via LLM validation.</p>
 </div>
@@ -421,27 +420,27 @@
 <!-- Process Section -->
 <section id="process" class="bg-surface-container-low dark:bg-surface-container-low-dark py-32">
 <div class="max-w-7xl mx-auto px-6">
-<div class="flex flex-col md:flex-row gap-24">
+<div class="flex flex-col md:flex-row gap-12 md:gap-24">
 <div class="md:w-1/3">
 <h2 class="text-5xl font-extrabold tracking-tighter mb-6 dark:text-white" data-i18n="process.title">Privacy by performance.</h2>
 <p class="text-on-surface-variant dark:text-on-surface-variant-dark" data-i18n="process.subtitle">Three steps to a faster workflow. No accounts, no clouds, no tracking.</p>
 </div>
-<div class="md:w-2/3 grid grid-cols-1 gap-16">
-<div class="flex gap-8 animate-on-scroll">
+<div class="md:w-2/3 grid grid-cols-1 gap-12 md:gap-16">
+<div class="flex gap-4 md:gap-8 animate-on-scroll">
 <span class="text-4xl font-extrabold text-neutral-300 dark:text-neutral-600">01</span>
 <div>
 <h4 class="text-xl font-bold mb-2 dark:text-white" data-i18n="process.1.title">Hold Key (Option+Space)</h4>
 <p class="text-on-surface-variant dark:text-on-surface-variant-dark leading-relaxed" data-i18n="process.1.desc">Activate Input 0 from anywhere. The interface appears as a subtle glass overlay that respects your focus.</p>
 </div>
 </div>
-<div class="flex gap-8 animate-on-scroll">
+<div class="flex gap-4 md:gap-8 animate-on-scroll">
 <span class="text-4xl font-extrabold text-neutral-300 dark:text-neutral-600">02</span>
 <div>
 <h4 class="text-xl font-bold mb-2 dark:text-white" data-i18n="process.2.title">AI Transcribe & Polish</h4>
 <p class="text-on-surface-variant dark:text-on-surface-variant-dark leading-relaxed" data-i18n="process.2.desc">Release the key and Input 0 transcribes your speech locally, then an LLM refines it into polished, professional text.</p>
 </div>
 </div>
-<div class="flex gap-8 animate-on-scroll">
+<div class="flex gap-4 md:gap-8 animate-on-scroll">
 <span class="text-4xl font-extrabold text-neutral-300 dark:text-neutral-600">03</span>
 <div>
 <h4 class="text-xl font-bold mb-2 dark:text-white" data-i18n="process.3.title">Auto Paste</h4>
@@ -474,7 +473,7 @@
 <p class="font-sans text-xs uppercase tracking-widest text-neutral-400 dark:text-neutral-600 mb-6 md:mb-0">
                 CC BY-NC 4.0 © 2025 Input 0
             </p>
-<div class="flex gap-12 font-sans text-xs uppercase tracking-widest">
+<div class="flex gap-6 md:gap-12 font-sans text-xs uppercase tracking-widest">
 <a class="text-neutral-400 dark:text-neutral-600 hover:text-neutral-900 dark:hover:text-neutral-50 transition-all opacity-80 hover:opacity-100" href="https://github.com/10xChengTu/input0" target="_blank" rel="noopener noreferrer">GitHub</a>
 <a class="text-neutral-400 dark:text-neutral-600 hover:text-neutral-900 dark:hover:text-neutral-50 transition-all opacity-80 hover:opacity-100" href="#">Support</a>
 </div>
@@ -674,8 +673,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateThemeUI() {
         const isDark = htmlEl.classList.contains('dark');
-        const icon = isDark ? 'dark_mode' : 'light_mode';
-        if (themeBtn) themeBtn.textContent = icon;
+        const lightIcon = document.getElementById('theme-icon-light');
+        const darkIcon = document.getElementById('theme-icon-dark');
+        if (lightIcon && darkIcon) {
+            if (isDark) {
+                lightIcon.classList.add('hidden');
+                darkIcon.classList.remove('hidden');
+            } else {
+                lightIcon.classList.remove('hidden');
+                darkIcon.classList.add('hidden');
+            }
+        }
     }
 
     function toggleTheme() {
@@ -749,19 +757,31 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize i18n on load
     updateI18n();
 
-    // Fetch GitHub star count
+    // Fetch GitHub star count with animated counter
     (function fetchGitHubStars() {
+        function formatStarCount(n) {
+            return n >= 1000 ? (n / 1000).toFixed(1) + 'K' : String(n);
+        }
+        function animateCount(el, target) {
+            var duration = 1200;
+            var start = performance.now();
+            function tick(now) {
+                var elapsed = now - start;
+                var progress = Math.min(elapsed / duration, 1);
+                // ease-out cubic
+                var eased = 1 - Math.pow(1 - progress, 3);
+                var current = Math.round(eased * target);
+                el.textContent = formatStarCount(current);
+                if (progress < 1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        }
         fetch('https://api.github.com/repos/10xChengTu/input0')
             .then(function(r) { return r.json(); })
             .then(function(data) {
-                if (data.stargazers_count !== undefined) {
-                    var count = data.stargazers_count;
-                    var formatted = count >= 1000 ? (count / 1000).toFixed(1) + 'K' : String(count);
+                if (data.stargazers_count !== undefined && data.stargazers_count > 0) {
                     var el = document.getElementById('github-stars');
-                    if (el) {
-                        el.textContent = formatted;
-                        el.classList.remove('hidden');
-                    }
+                    if (el) animateCount(el, data.stargazers_count);
                 }
             })
             .catch(function() {}); // Silent fail — button still works without star count
