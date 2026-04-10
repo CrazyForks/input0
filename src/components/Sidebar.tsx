@@ -12,6 +12,7 @@ export type PageId = "home" | "history" | "vocabulary" | "data" | "settings";
 interface SidebarProps {
   activePage: PageId;
   onNavigate: (page: PageId) => void;
+  onNavigateToSection?: (section: string) => void;
 }
 
 const navIcons: Record<PageId, React.ReactNode> = {
@@ -45,7 +46,7 @@ const navIcons: Record<PageId, React.ReactNode> = {
 
 const pageIds: PageId[] = ["home", "history", "vocabulary", "data", "settings"];
 
-export function Sidebar({ activePage, onNavigate }: SidebarProps) {
+export function Sidebar({ activePage, onNavigate, onNavigateToSection }: SidebarProps) {
   const { t, locale, toggleLocale } = useLocaleStore();
   const { theme, toggleTheme } = useThemeStore();
   const { updateAvailable, checkForUpdates } = useUpdateStore();
@@ -101,7 +102,11 @@ export function Sidebar({ activePage, onNavigate }: SidebarProps) {
       </nav>
 
       <div className="px-3 pb-4 flex items-center justify-between">
-        <div className="px-2.5 flex items-center gap-1.5">
+        <button
+          type="button"
+          onClick={() => onNavigateToSection?.("update")}
+          className="px-2.5 flex items-center gap-1.5 rounded-md hover:bg-[var(--theme-sidebar-item-hover)] transition-colors cursor-pointer"
+        >
           <span className="text-[11px] text-[var(--theme-sidebar-text-muted)] select-none">
             v{appVersion}
           </span>
@@ -111,7 +116,7 @@ export function Sidebar({ activePage, onNavigate }: SidebarProps) {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--theme-primary)]"></span>
             </span>
           )}
-        </div>
+        </button>
         <div className="flex items-center gap-1">
           <a
             href="https://github.com/10xChengTu/input0"

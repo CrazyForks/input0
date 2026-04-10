@@ -209,6 +209,7 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
     if (section === "hotkey" || section === "language") return "general";
     if (section === "api-key") return "api";
     if (section === "user-tags") return "general";
+    if (section === "update") return "general";
     return "general";
   };
 
@@ -219,6 +220,13 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
   useEffect(() => {
     if (scrollToSection) {
       setActiveTab(sectionToTab(scrollToSection));
+      // Delay scroll to allow tab content to render
+      requestAnimationFrame(() => {
+        const el = document.getElementById(`section-${scrollToSection}`);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
       onScrollComplete?.();
     }
   }, [scrollToSection, onScrollComplete]);
@@ -528,7 +536,7 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
                 </div>
               </section>
 
-              <section>
+              <section id="section-update">
                 <h2 className="text-xs font-semibold text-[var(--theme-on-surface-variant)] uppercase tracking-wider mb-4">{t.update.title}</h2>
                 <div className="bg-[var(--theme-surface-container-lowest)] rounded-xl border border-[var(--theme-outline-variant)] overflow-hidden divide-y divide-[var(--theme-divider)]">
                   <div className="p-4 sm:p-5 flex items-center justify-between">

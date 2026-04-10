@@ -58,7 +58,7 @@ export default function Settings() {
 
   return (
     <div className="flex h-screen bg-[var(--theme-surface)]">
-      <Sidebar activePage={activePage} onNavigate={setActivePage} />
+      <Sidebar activePage={activePage} onNavigate={setActivePage} onNavigateToSection={navigateToSettingsSection} />
 
       <main className="flex-1 flex flex-col min-h-0 pt-2 pr-2 pb-2">
         <div className="flex-1 overflow-y-auto bg-[var(--theme-content-bg)] rounded-[var(--theme-content-radius)]">
