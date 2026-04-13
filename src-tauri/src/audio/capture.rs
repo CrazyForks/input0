@@ -173,7 +173,10 @@ impl AudioRecorder {
 
     pub fn stop(&mut self) -> Result<Vec<f32>, AppError> {
         self.is_recording.store(false, Ordering::SeqCst);
-        self.stream = None;
+        if let Some(stream) = self.stream.take() {
+            let _ = stream.pause();
+            drop(stream);
+        }
 
         let samples = self
             .samples
