@@ -167,6 +167,16 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
   const activeModel = sttModels.find((m) => m.is_active);
   const [showApiKey, setShowApiKey] = useState(false);
   const [isRecordingHotkey, setIsRecordingHotkey] = useState(false);
+  const isPresetHotkey = (h: string) => h === "Option+Space" || h === "Fn";
+  const [lastCustomHotkey, setLastCustomHotkey] = useState<string>(() =>
+    !isPresetHotkey(hotkey) && hotkey ? hotkey : ""
+  );
+  useEffect(() => {
+    if (!isPresetHotkey(hotkey) && hotkey) {
+      setLastCustomHotkey(hotkey);
+    }
+  }, [hotkey]);
+  const isCustomActive = !isPresetHotkey(hotkey) && !!hotkey;
   const focusValueRef = useRef<string>("");
   const [accessibilityGranted, setAccessibilityGranted] = useState<boolean | null>(null);
   const [micPermission, setMicPermission] = useState<string | null>(null);
@@ -338,16 +348,51 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
                         />
                       ) : (
                         <>
-                          <kbd className="inline-flex items-center px-3 py-1.5 rounded-md border border-[var(--theme-kbd-border)] bg-[var(--theme-kbd-bg)] text-sm font-sans font-medium text-[var(--theme-kbd-text)]">
-                            {hotkey || "Option+Space"}
-                          </kbd>
-                          <button
-                            type="button"
-                            onClick={() => setIsRecordingHotkey(true)}
-                            className="text-xs font-medium text-[var(--theme-primary)] hover:text-[var(--theme-primary-hover)] transition-colors"
+                          {isCustomActive && (
+                            <button
+                              type="button"
+                              onClick={() => setIsRecordingHotkey(true)}
+                              className="text-xs font-medium text-[var(--theme-primary)] hover:text-[var(--theme-primary-hover)] transition-colors"
+                            >
+                              {t.settings.hotkeyChange}
+                            </button>
+                          )}
+                          <select
+                            value={isCustomActive ? "__custom__" : hotkey}
+                            onChange={async (e) => {
+                              const value = e.target.value;
+                              if (value === "__custom__") {
+                                if (lastCustomHotkey) {
+                                  if (lastCustomHotkey === hotkey) return;
+                                  try {
+                                    await updateHotkey(lastCustomHotkey);
+                                    onToast(t.settings.hotkeyChanged, "success");
+                                  } catch {
+                                    onToast(t.settings.hotkeyChangeFailed, "error");
+                                  }
+                                } else {
+                                  setIsRecordingHotkey(true);
+                                }
+                                return;
+                              }
+                              if (value === hotkey) return;
+                              try {
+                                await updateHotkey(value);
+                                onToast(t.settings.hotkeyChanged, "success");
+                              } catch {
+                                onToast(t.settings.hotkeyChangeFailed, "error");
+                              }
+                            }}
+                            className="rounded-md border border-[var(--theme-outline-variant)] bg-[var(--theme-input-bg)] py-1.5 pl-3 pr-8 text-sm text-[var(--theme-on-surface)] focus:border-[var(--theme-input-focus-border)] focus:ring-2 focus:ring-[var(--theme-input-focus-border)] outline-none transition-shadow"
                           >
-                            {t.settings.hotkeyChange}
-                          </button>
+                            <option value="Option+Space" className="bg-[var(--theme-surface)] text-[var(--theme-on-surface)]">{t.settings.hotkeyPresetOptionSpace}</option>
+                            <option value="Fn" className="bg-[var(--theme-surface)] text-[var(--theme-on-surface)]">{t.settings.hotkeyPresetFn}</option>
+                            <option value="__custom__" className="bg-[var(--theme-surface)] text-[var(--theme-on-surface)]">
+                              {lastCustomHotkey
+                                ? `${t.settings.hotkeyPresetCustom}: ${lastCustomHotkey}`
+                                : `${t.settings.hotkeyPresetCustom}…`}
+                            </option>
+                          </select>
                         </>
                       )}
                     </div>

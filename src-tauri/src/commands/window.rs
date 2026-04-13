@@ -64,6 +64,15 @@ where
     gcd::run_on_main_async(f);
 }
 
+#[cfg(target_os = "macos")]
+pub fn gcd_run_on_main_sync<F, R>(f: F) -> R
+where
+    F: FnOnce() -> R + Send,
+    R: Send,
+{
+    gcd::run_on_main_sync(f)
+}
+
 /// Pre-warm the overlay window during app setup so the first show is instant.
 /// Performs swizzle (NSWindow → NSPanel), transparency, and panel configuration
 /// synchronously on the main thread but does NOT make the window visible.

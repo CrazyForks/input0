@@ -16,7 +16,7 @@ pub mod vocabulary;
 pub mod whisper;
 
 use std::sync::{Arc, Mutex};
-use std::sync::atomic::Ordering;
+use std::sync::atomic::{AtomicBool, Ordering};
 use tauri::{Emitter, Manager};
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::TrayIconBuilder;
@@ -27,197 +27,287 @@ use crate::models::manager as model_manager;
 use crate::pipeline::OverlayGeneration;
 use crate::stt::{SharedTranscriber, whisper_backend::WhisperBackend, sensevoice_backend::SenseVoiceBackend, paraformer_backend::ParaformerBackend, moonshine_backend::MoonshineBackend};
 
-/// Managed state: the Tauri-format shortcut string currently registered (e.g. "Alt+Space").
+/// Managed state: the raw hotkey string currently registered.
+/// Stores the user-facing format (e.g. "Option+Space" or "Fn") so we can
+/// route press/release events to the appropriate backend (global shortcut
+/// plugin vs. native Fn monitor).
 pub type CurrentShortcut = Arc<Mutex<String>>;
 
-pub fn register_pipeline_shortcut(
-    app: &tauri::AppHandle,
-    shortcut_str: &str,
-) -> Result<(), errors::AppError> {
-    use tauri_plugin_global_shortcut::GlobalShortcutExt;
+/// Managed state: set to true when a pipeline start failed between Pressed
+/// and Released, so the Released handler knows to schedule the error toast
+/// hide instead of calling stop_recording.
+///
+/// Wrapped in a newtype struct because Tauri's `manage()` keys state by
+/// concrete type. `PipelineActive` is also `Arc<AtomicBool>`, so using a bare
+/// type alias here would collide and panic at startup.
+pub struct PipelineErrorPending(pub Arc<AtomicBool>);
 
+pub fn new_pipeline_error_pending() -> PipelineErrorPending {
+    PipelineErrorPending(Arc::new(AtomicBool::new(false)))
+}
+
+/// Returns true if the given raw hotkey string designates the macOS Fn key.
+pub fn is_fn_hotkey(raw: &str) -> bool {
+    raw.trim().eq_ignore_ascii_case("Fn")
+}
+
+/// Handle the "pressed" edge of the activation hotkey. Invoked from both the
+/// global-shortcut callback and the native Fn key monitor.
+pub fn trigger_pipeline_pressed(app: &tauri::AppHandle) {
     let pipeline_arc = app.state::<Arc<Mutex<pipeline::Pipeline>>>().inner().clone();
     let overlay_gen = app.state::<OverlayGeneration>().inner().clone();
     let pipeline_active = app.state::<pipeline::PipelineActive>().inner().clone();
-    let error_pending = Arc::new(std::sync::atomic::AtomicBool::new(false));
-    let active_flag = pipeline_active.clone();
+    let error_pending = app.state::<PipelineErrorPending>().0.clone();
+
+    let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        if pipeline_active.load(Ordering::SeqCst) {
+            return;
+        }
+        overlay_gen.fetch_add(1, Ordering::SeqCst);
+        let source_app = crate::input::get_frontmost_app();
+        let pa = Arc::clone(&pipeline_arc);
+        let ah = app.clone();
+        let ah_overlay = app.clone();
+        let ah_err = app.clone();
+        let ep = Arc::clone(&error_pending);
+        tauri::async_runtime::spawn(async move {
+            commands::window::position_and_show_overlay(&ah_overlay);
+
+            let _ = ah_overlay.emit(
+                "pipeline-state",
+                pipeline::PipelineEvent {
+                    state: pipeline::PipelineState::Recording,
+                },
+            );
+
+            let start_result = tokio::time::timeout(
+                std::time::Duration::from_secs(10),
+                tokio::task::spawn_blocking(move || match pa.lock() {
+                    Ok(mut p) => {
+                        p.set_source_app(source_app);
+                        p.start_recording(&ah)
+                    }
+                    Err(e) => Err(crate::errors::AppError::Audio(
+                        format!("Mutex poisoned: {}", e),
+                    )),
+                }),
+            )
+            .await;
+
+            let err_msg = match start_result {
+                Ok(Ok(Ok(()))) => None,
+                Ok(Ok(Err(e))) => Some(e.to_string()),
+                Ok(Err(e)) => Some(format!("spawn_blocking panic: {}", e)),
+                Err(_) => Some("start_recording timed out (10s)".to_string()),
+            };
+
+            if let Some(msg) = err_msg {
+                log::error!("Pipeline start_recording error: {}", msg);
+                let _ = ah_err.emit(
+                    "pipeline-state",
+                    pipeline::PipelineEvent {
+                        state: pipeline::PipelineState::Error { message: msg },
+                    },
+                );
+                ep.store(true, Ordering::SeqCst);
+            }
+        });
+    }));
+
+    if let Err(e) = result {
+        log::error!(
+            "CRITICAL: panic in hotkey pressed handler caught: {:?}",
+            e.downcast_ref::<String>()
+                .map(|s| s.as_str())
+                .or_else(|| e.downcast_ref::<&str>().copied())
+                .unwrap_or("unknown panic")
+        );
+    }
+}
+
+/// Handle the "released" edge of the activation hotkey.
+pub fn trigger_pipeline_released(app: &tauri::AppHandle) {
+    let pipeline_arc = app.state::<Arc<Mutex<pipeline::Pipeline>>>().inner().clone();
+    let overlay_gen = app.state::<OverlayGeneration>().inner().clone();
+    let pipeline_active = app.state::<pipeline::PipelineActive>().inner().clone();
+    let error_pending = app.state::<PipelineErrorPending>().0.clone();
+
+    let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        if error_pending.swap(false, Ordering::SeqCst) {
+            let ah = app.clone();
+            let gen = Arc::clone(&overlay_gen);
+            let snap = gen.load(Ordering::SeqCst);
+            tauri::async_runtime::spawn(async move {
+                tokio::time::sleep(std::time::Duration::from_millis(2200)).await;
+                pipeline::hide_overlay_if_current(&ah, &gen, snap);
+            });
+            return;
+        }
+        if !pipeline_active.load(Ordering::SeqCst) {
+            return;
+        }
+        let pa = Arc::clone(&pipeline_arc);
+        let ah = app.clone();
+        let gen = Arc::clone(&overlay_gen);
+        tauri::async_runtime::spawn(async move {
+            let stop_result = tokio::time::timeout(
+                std::time::Duration::from_secs(10),
+                tokio::task::spawn_blocking(move || match pa.lock() {
+                    Ok(mut p) => {
+                        let ct = p.cancel_token();
+                        let recorded = p.stop_recording_sync()?;
+                        Ok((recorded, ct))
+                    }
+                    Err(e) => Err(crate::errors::AppError::Audio(
+                        format!("Mutex poisoned: {}", e),
+                    )),
+                }),
+            )
+            .await;
+
+            let (recorded, cancel_token) = match stop_result {
+                Ok(Ok(Ok(r))) => r,
+                Ok(Ok(Err(e))) => {
+                    log::error!("stop_recording_sync error: {}", e);
+                    let _ = ah.emit(
+                        "pipeline-state",
+                        pipeline::PipelineEvent {
+                            state: pipeline::PipelineState::Error {
+                                message: e.to_string(),
+                            },
+                        },
+                    );
+                    let snap = gen.load(Ordering::SeqCst);
+                    tokio::time::sleep(std::time::Duration::from_millis(2200)).await;
+                    pipeline::hide_overlay_if_current(&ah, &gen, snap);
+                    return;
+                }
+                Ok(Err(e)) => {
+                    log::error!("stop spawn_blocking panic: {}", e);
+                    return;
+                }
+                Err(_) => {
+                    log::error!("stop_recording timed out (10s)");
+                    let _ = ah.emit(
+                        "pipeline-state",
+                        pipeline::PipelineEvent {
+                            state: pipeline::PipelineState::Error {
+                                message: "stop_recording timed out".to_string(),
+                            },
+                        },
+                    );
+                    let snap = gen.load(Ordering::SeqCst);
+                    tokio::time::sleep(std::time::Duration::from_millis(2200)).await;
+                    pipeline::hide_overlay_if_current(&ah, &gen, snap);
+                    return;
+                }
+            };
+
+            match pipeline::process_audio(recorded, ah.clone(), cancel_token).await {
+                Err(e) if e.to_string().contains("Cancelled") => {
+                    log::info!("Pipeline cancelled by user");
+                }
+                Err(e) => {
+                    log::error!("process_audio error: {}", e);
+                    let _ = ah.emit(
+                        "pipeline-state",
+                        pipeline::PipelineEvent {
+                            state: pipeline::PipelineState::Error {
+                                message: e.to_string(),
+                            },
+                        },
+                    );
+                    let snap = gen.load(Ordering::SeqCst);
+                    tokio::time::sleep(std::time::Duration::from_millis(2200)).await;
+                    pipeline::hide_overlay_if_current(&ah, &gen, snap);
+                }
+                Ok(_) => {}
+            }
+        });
+    }));
+
+    if let Err(e) = result {
+        log::error!(
+            "CRITICAL: panic in hotkey released handler caught: {:?}",
+            e.downcast_ref::<String>()
+                .map(|s| s.as_str())
+                .or_else(|| e.downcast_ref::<&str>().copied())
+                .unwrap_or("unknown panic")
+        );
+    }
+}
+
+/// Register a pipeline activation hotkey, routing to the global-shortcut
+/// plugin for normal key combos or to the native macOS Fn monitor when the
+/// raw hotkey is "Fn".
+pub fn register_pipeline_shortcut(
+    app: &tauri::AppHandle,
+    raw_hotkey: &str,
+) -> Result<(), errors::AppError> {
+    if is_fn_hotkey(raw_hotkey) {
+        #[cfg(target_os = "macos")]
+        {
+            let app_for_cb = app.clone();
+            return crate::input::fn_monitor::start(move |pressed| {
+                if pressed {
+                    trigger_pipeline_pressed(&app_for_cb);
+                } else {
+                    trigger_pipeline_released(&app_for_cb);
+                }
+            })
+            .map_err(|e| errors::AppError::Input(format!("Failed to start Fn monitor: {}", e)));
+        }
+        #[cfg(not(target_os = "macos"))]
+        {
+            return Err(errors::AppError::Input(
+                "Fn key shortcut is only supported on macOS".to_string(),
+            ));
+        }
+    }
+
+    let tauri_shortcut = input::hotkey::to_tauri_shortcut(raw_hotkey)?;
 
     app.global_shortcut()
-        .on_shortcut(shortcut_str, move |_app_handle, _shortcut, event| {
-            let state = event.state;
-            let pipeline_arc2 = Arc::clone(&pipeline_arc);
-            let app_handle2 = _app_handle.clone();
-
-            let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-                match state {
-                    ShortcutState::Pressed => {
-                        if active_flag.load(Ordering::SeqCst) {
-                            return;
-                        }
-                        overlay_gen.fetch_add(1, Ordering::SeqCst);
-                        let source_app = crate::input::get_frontmost_app();
-                        let pa = Arc::clone(&pipeline_arc2);
-                        let ah = app_handle2.clone();
-                        let ah_overlay = app_handle2.clone();
-                        let ah_err = app_handle2.clone();
-                        let ep = Arc::clone(&error_pending);
-                        tauri::async_runtime::spawn(async move {
-                            commands::window::position_and_show_overlay(&ah_overlay);
-
-                            let _ = ah_overlay.emit(
-                                "pipeline-state",
-                                pipeline::PipelineEvent {
-                                    state: pipeline::PipelineState::Recording,
-                                },
-                            );
-
-                            let start_result = tokio::time::timeout(
-                                std::time::Duration::from_secs(10),
-                                tokio::task::spawn_blocking(move || {
-                                    match pa.lock() {
-                                        Ok(mut p) => {
-                                            p.set_source_app(source_app);
-                                            p.start_recording(&ah)
-                                        }
-                                        Err(e) => Err(crate::errors::AppError::Audio(
-                                            format!("Mutex poisoned: {}", e),
-                                        )),
-                                    }
-                                }),
-                            )
-                            .await;
-
-                            let err_msg = match start_result {
-                                Ok(Ok(Ok(()))) => None,
-                                Ok(Ok(Err(e))) => Some(e.to_string()),
-                                Ok(Err(e)) => Some(format!("spawn_blocking panic: {}", e)),
-                                Err(_) => Some("start_recording timed out (10s)".to_string()),
-                            };
-
-                            if let Some(msg) = err_msg {
-                                log::error!("Pipeline start_recording error: {}", msg);
-                                let _ = ah_err.emit(
-                                    "pipeline-state",
-                                    pipeline::PipelineEvent {
-                                        state: pipeline::PipelineState::Error {
-                                            message: msg,
-                                        },
-                                    },
-                                );
-                                ep.store(true, std::sync::atomic::Ordering::SeqCst);
-                            }
-                        });
-                    }
-                    ShortcutState::Released => {
-                        let ep = Arc::clone(&error_pending);
-                        if ep.swap(false, std::sync::atomic::Ordering::SeqCst) {
-                            let ah = app_handle2.clone();
-                            let gen = Arc::clone(&overlay_gen);
-                            let snap = gen.load(Ordering::SeqCst);
-                            tauri::async_runtime::spawn(async move {
-                                tokio::time::sleep(std::time::Duration::from_millis(2200)).await;
-                                pipeline::hide_overlay_if_current(&ah, &gen, snap);
-                            });
-                            return;
-                        }
-                        if !active_flag.load(Ordering::SeqCst) {
-                            return;
-                        }
-                        let pa = Arc::clone(&pipeline_arc2);
-                        let ah = app_handle2.clone();
-                        let gen = Arc::clone(&overlay_gen);
-                        tauri::async_runtime::spawn(async move {
-                            let stop_result = tokio::time::timeout(
-                                std::time::Duration::from_secs(10),
-                                tokio::task::spawn_blocking(move || {
-                                    match pa.lock() {
-                                        Ok(mut p) => {
-                                            let ct = p.cancel_token();
-                                            let recorded = p.stop_recording_sync()?;
-                                            Ok((recorded, ct))
-                                        }
-                                        Err(e) => Err(crate::errors::AppError::Audio(
-                                            format!("Mutex poisoned: {}", e),
-                                        )),
-                                    }
-                                }),
-                            )
-                            .await;
-
-                            let (recorded, cancel_token) = match stop_result {
-                                Ok(Ok(Ok(r))) => r,
-                                Ok(Ok(Err(e))) => {
-                                    log::error!("stop_recording_sync error: {}", e);
-                                    let _ = ah.emit(
-                                        "pipeline-state",
-                                        pipeline::PipelineEvent {
-                                            state: pipeline::PipelineState::Error {
-                                                message: e.to_string(),
-                                            },
-                                        },
-                                    );
-                                    let snap = gen.load(Ordering::SeqCst);
-                                    tokio::time::sleep(std::time::Duration::from_millis(2200)).await;
-                                    pipeline::hide_overlay_if_current(&ah, &gen, snap);
-                                    return;
-                                }
-                                Ok(Err(e)) => {
-                                    log::error!("stop spawn_blocking panic: {}", e);
-                                    return;
-                                }
-                                Err(_) => {
-                                    log::error!("stop_recording timed out (10s)");
-                                    let _ = ah.emit(
-                                        "pipeline-state",
-                                        pipeline::PipelineEvent {
-                                            state: pipeline::PipelineState::Error {
-                                                message: "stop_recording timed out".to_string(),
-                                            },
-                                        },
-                                    );
-                                    let snap = gen.load(Ordering::SeqCst);
-                                    tokio::time::sleep(std::time::Duration::from_millis(2200)).await;
-                                    pipeline::hide_overlay_if_current(&ah, &gen, snap);
-                                    return;
-                                }
-                            };
-
-                            match pipeline::process_audio(recorded, ah.clone(), cancel_token).await {
-                                Err(e) if e.to_string().contains("Cancelled") => {
-                                    log::info!("Pipeline cancelled by user");
-                                }
-                                Err(e) => {
-                                    log::error!("process_audio error: {}", e);
-                                    let _ = ah.emit(
-                                        "pipeline-state",
-                                        pipeline::PipelineEvent {
-                                            state: pipeline::PipelineState::Error {
-                                                message: e.to_string(),
-                                            },
-                                        },
-                                    );
-                                    let snap = gen.load(Ordering::SeqCst);
-                                    tokio::time::sleep(std::time::Duration::from_millis(2200)).await;
-                                    pipeline::hide_overlay_if_current(&ah, &gen, snap);
-                                }
-                                Ok(_) => {}
-                            }
-                        });
-                    }
-                }
-            }));
-
-            if let Err(e) = result {
-                log::error!(
-                    "CRITICAL: panic in shortcut handler caught: {:?}",
-                    e.downcast_ref::<String>()
-                        .map(|s| s.as_str())
-                        .or_else(|| e.downcast_ref::<&str>().copied())
-                        .unwrap_or("unknown panic")
-                );
+        .on_shortcut(tauri_shortcut.as_str(), move |app_handle, _shortcut, event| {
+            match event.state {
+                ShortcutState::Pressed => trigger_pipeline_pressed(app_handle),
+                ShortcutState::Released => trigger_pipeline_released(app_handle),
             }
         })
-        .map_err(|e| errors::AppError::Input(format!("Failed to register shortcut '{}': {}", shortcut_str, e)))
+        .map_err(|e| {
+            errors::AppError::Input(format!(
+                "Failed to register shortcut '{}': {}",
+                tauri_shortcut, e
+            ))
+        })
+}
+
+/// Unregister whichever backend currently holds the given raw hotkey.
+pub fn unregister_pipeline_shortcut(
+    app: &tauri::AppHandle,
+    raw_hotkey: &str,
+) -> Result<(), errors::AppError> {
+    if is_fn_hotkey(raw_hotkey) {
+        #[cfg(target_os = "macos")]
+        {
+            return crate::input::fn_monitor::stop()
+                .map_err(|e| errors::AppError::Input(format!("Failed to stop Fn monitor: {}", e)));
+        }
+        #[cfg(not(target_os = "macos"))]
+        {
+            return Ok(());
+        }
+    }
+
+    let tauri_shortcut = input::hotkey::to_tauri_shortcut(raw_hotkey)?;
+    app.global_shortcut()
+        .unregister(tauri_shortcut.as_str())
+        .map_err(|e| {
+            errors::AppError::Input(format!(
+                "Failed to unregister shortcut '{}': {}",
+                tauri_shortcut, e
+            ))
+        })
 }
 
 fn load_stt_model(transcriber: &SharedTranscriber, model_id: &str) -> Result<(), errors::AppError> {
@@ -380,6 +470,7 @@ pub fn run() {
         .manage(pipeline::new_managed(pipeline_active_for_manage))
         .manage(pipeline_active.clone())
         .manage(pipeline::new_overlay_generation())
+        .manage(new_pipeline_error_pending())
         .manage(stt::new_shared_transcriber())
         .setup(move |app| {
             #[cfg(target_os = "macos")]
@@ -474,19 +565,18 @@ pub fn run() {
                 }
             }
 
-            let shortcut_str = match input::hotkey::to_tauri_shortcut(&config.hotkey) {
-                Ok(s) => s,
-                Err(e) => {
-                    log::warn!("Invalid hotkey config '{}': {}", config.hotkey, e);
-                    return Ok(());
+            let raw_hotkey = config.hotkey.clone();
+            if !is_fn_hotkey(&raw_hotkey) {
+                if let Err(e) = input::hotkey::to_tauri_shortcut(&raw_hotkey) {
+                    log::warn!("Invalid hotkey config '{}': {}", raw_hotkey, e);
                 }
-            };
+            }
 
             let app_handle = app.handle().clone();
-            app.manage(Arc::new(Mutex::new(shortcut_str.clone())) as CurrentShortcut);
+            app.manage(Arc::new(Mutex::new(raw_hotkey.clone())) as CurrentShortcut);
 
-            if let Err(e) = register_pipeline_shortcut(&app_handle, &shortcut_str) {
-                log::error!("Failed to register global shortcut '{}': {}", shortcut_str, e);
+            if let Err(e) = register_pipeline_shortcut(&app_handle, &raw_hotkey) {
+                log::error!("Failed to register activation hotkey '{}': {}", raw_hotkey, e);
             }
 
             let esc_pipeline_arc = app.state::<Arc<Mutex<pipeline::Pipeline>>>().inner().clone();

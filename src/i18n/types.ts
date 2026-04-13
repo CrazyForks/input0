@@ -88,6 +88,9 @@ export interface Translations {
     hotkeyRecording: string;
     hotkeyChangeFailed: string;
     hotkeyChanged: string;
+    hotkeyPresetOptionSpace: string;
+    hotkeyPresetFn: string;
+    hotkeyPresetCustom: string;
     textStructuringLabel: string;
     textStructuringHint: string;
     sttModelTitle: string;

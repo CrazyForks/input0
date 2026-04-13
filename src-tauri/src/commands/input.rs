@@ -1,10 +1,12 @@
 use tauri::command;
 use tauri::AppHandle;
 use tauri::Manager;
-use tauri_plugin_global_shortcut::GlobalShortcutExt;
 use crate::input::{self, paste, hotkey};
 use crate::errors::AppError;
-use crate::{config, CurrentShortcut, register_pipeline_shortcut};
+use crate::{
+    config, is_fn_hotkey, register_pipeline_shortcut, unregister_pipeline_shortcut,
+    CurrentShortcut,
+};
 
 #[command]
 pub async fn paste_text(text: String) -> Result<(), AppError> {
@@ -25,25 +27,27 @@ pub fn get_tauri_shortcut(hotkey_str: String) -> Result<String, AppError> {
 
 #[command]
 pub fn update_hotkey(app: AppHandle, hotkey_str: String) -> Result<(), AppError> {
-    let new_tauri_shortcut = hotkey::to_tauri_shortcut(&hotkey_str)?;
+    if !is_fn_hotkey(&hotkey_str) {
+        hotkey::to_tauri_shortcut(&hotkey_str)?;
+    }
 
     let current_shortcut = app.state::<CurrentShortcut>();
-    let old_shortcut = {
+    let old_hotkey = {
         let guard = current_shortcut.lock().map_err(|e| {
             AppError::Input(format!("CurrentShortcut mutex poisoned: {}", e))
         })?;
         guard.clone()
     };
 
-    if old_shortcut == new_tauri_shortcut {
+    if old_hotkey.eq_ignore_ascii_case(&hotkey_str) {
         config::update_field("hotkey", &hotkey_str)?;
         return Ok(());
     }
 
-    let _ = app.global_shortcut().unregister(old_shortcut.as_str());
+    let _ = unregister_pipeline_shortcut(&app, &old_hotkey);
 
-    if let Err(e) = register_pipeline_shortcut(&app, &new_tauri_shortcut) {
-        let _ = register_pipeline_shortcut(&app, &old_shortcut);
+    if let Err(e) = register_pipeline_shortcut(&app, &hotkey_str) {
+        let _ = register_pipeline_shortcut(&app, &old_hotkey);
         return Err(e);
     }
 
@@ -53,7 +57,7 @@ pub fn update_hotkey(app: AppHandle, hotkey_str: String) -> Result<(), AppError>
         let mut guard = current_shortcut.lock().map_err(|e| {
             AppError::Input(format!("CurrentShortcut mutex poisoned: {}", e))
         })?;
-        *guard = new_tauri_shortcut;
+        *guard = hotkey_str;
     }
 
     Ok(())
@@ -68,9 +72,7 @@ pub fn unregister_hotkey(app: AppHandle) -> Result<(), AppError> {
         })?;
         guard.clone()
     };
-    app.global_shortcut()
-        .unregister(shortcut.as_str())
-        .map_err(|e| AppError::Input(format!("Failed to unregister shortcut '{}': {}", shortcut, e)))
+    unregister_pipeline_shortcut(&app, &shortcut)
 }
 
 #[command]
