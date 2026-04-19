@@ -119,8 +119,9 @@ docs/                         # 设计文档与需求记录
 | [docs/feature-audio-converter.md](docs/feature-audio-converter.md) | 音频转换模块（TDD 实现） | 2026-03-29 |
 | [docs/feature-pipeline.md](docs/feature-pipeline.md) | 语音处理流水线 + 启动流程 | 2026-03-29 |
 | [docs/feature-zh-initial-prompt.md](docs/feature-zh-initial-prompt.md) | 中文转录简繁体修复 | 2026-03-29 |
-| [docs/feature-model-switching.md](docs/feature-model-switching.md) | STT 模型切换 + 按需下载 + 推荐 | 2026-04-05 |
-| [docs/research-local-stt-models.md](docs/research-local-stt-models.md) | 本地 STT 模型调研报告 | 2026-04-05 |
+| [docs/feature-model-switching.md](docs/feature-model-switching.md) | STT 模型切换 + 按需下载 + 推荐 | 2026-04-19 |
+| [docs/research-local-stt-models.md](docs/research-local-stt-models.md) | 本地 STT 模型调研报告 | 2026-04-19 |
+| [docs/feature-add-stt-models.md](docs/feature-add-stt-models.md) | 新增三款 STT 模型：FireRedASR v1 / Paraformer 三语 / Zipformer 中文 CTC | 2026-04-19 |
 | [docs/feature-ui-redesign.md](docs/feature-ui-redesign.md) | UI 重设计：暗黑主题 + 动画 | 2026-03-30 |
 | [docs/feature-esc-cancel.md](docs/feature-esc-cancel.md) | ESC 取消语音输入 | 2026-03-31 |
 | [docs/feature-ui-redesign-sidebar.md](docs/feature-ui-redesign-sidebar.md) | Sidebar + 多页面布局 | 2026-04-01 |

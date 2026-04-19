@@ -1,6 +1,6 @@
 # Feature: 新增三款 STT 模型
 
-## 状态：设计中 📝
+## 状态：已实现 ✅
 
 ## 需求背景
 
@@ -32,7 +32,7 @@
 |---------|------|------|---------|--------|------|
 | `fire-red-asr-v1` | AED | `OfflineFireRedAsrModelConfig` | `encoder.int8.onnx` (1.29 GB) + `decoder.int8.onnx` (445 MB) + `tokens.txt` (71 KB) | **1.74 GB** | 中 + 英 |
 | `paraformer-trilingual` | Paraformer | `OfflineParaformerModelConfig`（复用） | `model.int8.onnx` (245 MB) + `tokens.txt` (119 KB) | **245 MB** | 中 + 英 + 粤 |
-| `zipformer-ctc-zh` | Zipformer CTC | `OfflineZipformerCtcModelConfig` | `model.int8.onnx` (367 MB) + `tokens.txt` (13 KB) + `bbpe.model` (255 KB) | **367 MB** | 中 |
+| `zipformer-ctc-zh` | Zipformer CTC | `OfflineZipformerCtcModelConfig` | `model.int8.onnx` (367 MB) + `tokens.txt` (13 KB) | **367 MB** | 中 |
 
 ### 下载来源（HuggingFace）
 
@@ -156,11 +156,7 @@ BackendKind::ZipformerCtc => {
 
 ### bbpe.model 的必要性
 
-Zipformer CTC 模型目录里有一个 `bbpe.model`（byte-level BPE 词表，255 KB）。sherpa-onnx 官方 Python 示例把它传给 `bpe_vocab` 字段，但 sherpa-rs 1.12 是否暴露此字段待验证。实现时分两步：
-1. 先不传 `bpe_vocab`，测一下能不能直接转写中文
-2. 如果中文输出不对（出现 byte-level 乱码），再查 crate 字段并传入
-
-若 1.12 crate 确实缺字段，临时方案是下载但不使用 `bbpe.model`；长期方案是升级 sherpa-onnx crate。
+**确认不需要 `bbpe.model`**。核查 `sherpa-onnx-1.12.34` crate 源码 `offline_asr.rs:255`，`OfflineZipformerCtcModelConfig` 仅暴露 `model: Option<String>` 字段。因此 `bbpe.model` 无处可传，不下载更干净（该文件 255 KB，用于 byte-level BPE 词表，当前 crate 未使用）。
 
 ### FireRedASR v2 暂不上
 

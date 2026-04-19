@@ -4,9 +4,9 @@
 
 ## 需求概述
 
-1. **模型切换功能**：支持在 9 个 STT 模型之间切换（Whisper 系列 6 个 + SenseVoice-Small + Paraformer 中文 + Moonshine Base EN）
+1. **模型切换功能**：支持在 12 个 STT 模型之间切换（Whisper 系列 6 个 + SenseVoice-Small + Paraformer 中文 + Paraformer 三语 + Moonshine Base EN + FireRedASR v1 + Zipformer 中文 CTC）
 2. **按需下载**：模型不再内置到应用包，用户需要时手动触发下载
-3. **四推理后端**：whisper-rs（Whisper 系列）+ sherpa-onnx（SenseVoice / Paraformer / Moonshine）
+3. **六推理后端**：whisper-rs（Whisper 系列）+ sherpa-onnx（SenseVoice / Paraformer / Moonshine / FireRedAsr / ZipformerCtc）
 4. **语言最佳配置**：每种语言有对应的最佳 STT 模型推荐
 5. **切换提示**：用户切换语言时，如果当前模型非最佳配置，提示切换
 
@@ -25,7 +25,9 @@ TranscriberBackend trait (统一接口)
     ├── WhisperBackend (whisper-rs)
     ├── SenseVoiceBackend (sherpa-onnx)
     ├── ParaformerBackend (sherpa-onnx)
-    └── MoonshineBackend (sherpa-onnx)
+    ├── MoonshineBackend (sherpa-onnx)
+    ├── FireRedAsrBackend (sherpa-onnx)   // 2026-04 新增
+    └── ZipformerCtcBackend (sherpa-onnx) // 2026-04 新增
     ↓
 Pipeline (使用当前激活的 backend)
 ```
@@ -42,7 +44,10 @@ Pipeline (使用当前激活的 backend)
 | `whisper-large-v3-turbo-q5` | Whisper Large v3 Turbo (Q5) | whisper-rs | ~547MB | 通用（量化） |
 | `sensevoice-small` | SenseVoice Small | sherpa-onnx | ~228MB | zh, ja, ko |
 | `paraformer-zh` | Paraformer 中文 | sherpa-onnx | ~217MB | zh |
+| `paraformer-trilingual` | Paraformer 中英粤三语 | sherpa-onnx | ~245MB | yue（粤语唯一推荐） |
 | `moonshine-base-en` | Moonshine Base (EN) | sherpa-onnx | ~274MB | en |
+| `fire-red-asr-v1` | FireRedASR Large v1 | sherpa-onnx | ~1.74GB | 手动选用（中文 SOTA） |
+| `zipformer-ctc-zh` | Zipformer 中文 CTC | sherpa-onnx | ~367MB | 手动选用（中文轻量备选） |
 
 ### 语言最佳模型映射
 
@@ -101,6 +106,8 @@ Pipeline (使用当前激活的 backend)
 - [x] SenseVoice 后端实现 (sherpa-onnx)
 - [x] Paraformer 后端实现 (sherpa-onnx)
 - [x] Moonshine 后端实现 (sherpa-onnx)
+- [x] FireRedAsr 后端实现 (sherpa-onnx) — 2026-04 新增
+- [x] ZipformerCtc 后端实现 (sherpa-onnx) — 2026-04 新增
 - [x] Tauri commands
 - [x] Pipeline 适配
 - [x] 前端 UI：模型选择、下载、语言推荐提示

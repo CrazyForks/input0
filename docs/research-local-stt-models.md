@@ -319,7 +319,7 @@ curl -L -o src-tauri/resources/ggml-large-v3-turbo.bin \
 
 此外，Paraformer-zh（中文专用）和 Moonshine Base（英文轻量）作为可选下载项供用户手动选择。
 
-**当前实现**：已通过四引擎架构（Whisper / SenseVoice / Paraformer / Moonshine）+ 9 个模型注册表完成，详见 `docs/feature-model-switching.md`。
+**当前实现**：已通过六后端架构（Whisper / SenseVoice / Paraformer / Moonshine / FireRedAsr / ZipformerCtc — 6 个后端，5 大模型家族）+ 12 个模型注册表完成，详见 `docs/feature-model-switching.md`。
 
 ---
 
@@ -370,7 +370,7 @@ curl -L -o src-tauri/resources/ggml-large-v3-turbo.bin \
 **当前最大的改进空间在于模型本身**——从 Whisper base 升级到更大的模型或更适合中文的模型，将带来质的飞跃。
 
 **已实施方案**（方案 C — 多模型策略 ✅）：
-- 四引擎架构：Whisper / SenseVoice / Paraformer / Moonshine
-- 9 个可下载模型，覆盖不同语言、精度、速度需求
+- 六后端架构：Whisper / SenseVoice / Paraformer / Moonshine / FireRedAsr / ZipformerCtc
+- 12 个可下载模型，覆盖不同语言、精度、速度需求
 - 智能推荐系统：根据用户语言设置自动推荐最优模型
 - 详见 `docs/feature-model-switching.md`
