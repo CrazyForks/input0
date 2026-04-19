@@ -160,6 +160,29 @@ const PARAFORMER_TRILINGUAL_FILES: &[ModelFile] = &[
     },
 ];
 
+// ── FireRedASR models ───────────────────────────────────────────────────────
+
+const FIRE_RED_ASR_V1_FILES: &[ModelFile] = &[
+    ModelFile {
+        relative_path: "encoder.int8.onnx",
+        url: "https://huggingface.co/csukuangfj/sherpa-onnx-fire-red-asr-large-zh_en-2025-02-16/resolve/main/encoder.int8.onnx",
+        size_bytes: 1_290_000_000,
+        sha1: None,
+    },
+    ModelFile {
+        relative_path: "decoder.int8.onnx",
+        url: "https://huggingface.co/csukuangfj/sherpa-onnx-fire-red-asr-large-zh_en-2025-02-16/resolve/main/decoder.int8.onnx",
+        size_bytes: 445_000_000,
+        sha1: None,
+    },
+    ModelFile {
+        relative_path: "tokens.txt",
+        url: "https://huggingface.co/csukuangfj/sherpa-onnx-fire-red-asr-large-zh_en-2025-02-16/resolve/main/tokens.txt",
+        size_bytes: 71_400,
+        sha1: None,
+    },
+];
+
 // ── Moonshine models ────────────────────────────────────────────────────────
 
 const MOONSHINE_BASE_EN_FILES: &[ModelFile] = &[
@@ -299,6 +322,18 @@ pub static ALL_MODELS: &[ModelInfo] = &[
         files: PARAFORMER_TRILINGUAL_FILES,
         best_for_languages: &["yue"],
         recommendation_reason: "粤语识别唯一可用模型，同时支持中英混合",
+    },
+    // --- FireRedASR family ---
+    ModelInfo {
+        id: "fire-red-asr-v1",
+        display_name: "FireRedASR Large v1",
+        description: "优点：小红书开源的中文 ASR SOTA，AED 架构精度极高，中文 CER 逼近 2%\n缺点：体积 1.74 GB 极大，首次下载耗时长，推理速度不如非自回归模型",
+        backend: BackendKind::FireRedAsr,
+        total_size_bytes: 1_735_071_400,
+        size_display: "1.74 GB",
+        files: FIRE_RED_ASR_V1_FILES,
+        best_for_languages: &[],
+        recommendation_reason: "",
     },
     // --- Moonshine family ---
     ModelInfo {

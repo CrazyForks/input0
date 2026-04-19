@@ -106,6 +106,14 @@ pub fn moonshine_model_paths(model_id: &str) -> Result<(PathBuf, PathBuf, PathBu
     Ok((preprocessor, encoder, uncached_decoder, cached_decoder, tokens))
 }
 
+pub fn fire_red_asr_model_paths(model_id: &str) -> Result<(PathBuf, PathBuf, PathBuf), AppError> {
+    let dir = model_dir(model_id)?;
+    let encoder = dir.join("encoder.int8.onnx");
+    let decoder = dir.join("decoder.int8.onnx");
+    let tokens = dir.join("tokens.txt");
+    Ok((encoder, decoder, tokens))
+}
+
 fn build_http_client() -> Result<reqwest::Client, AppError> {
     reqwest::Client::builder()
         .connect_timeout(std::time::Duration::from_secs(CONNECT_TIMEOUT_SECS))

@@ -84,9 +84,10 @@ pub async fn switch_model(
             )?)
         }
         registry::BackendKind::FireRedAsr => {
-            return Err(AppError::Whisper(
-                "FireRedAsr backend not yet wired up".to_string(),
-            ));
+            let (encoder, decoder, tokens) = manager::fire_red_asr_model_paths(&model_id)?;
+            Box::new(crate::stt::fire_red_asr_backend::FireRedAsrBackend::new(
+                &encoder, &decoder, &tokens, &model_id,
+            )?)
         }
         registry::BackendKind::ZipformerCtc => {
             return Err(AppError::Whisper(

@@ -99,3 +99,34 @@ fn test_paraformer_trilingual_recommended_for_cantonese() {
     assert!(ids.contains(&"paraformer-trilingual"),
         "paraformer-trilingual should be recommended for Cantonese, got: {:?}", ids);
 }
+
+#[test]
+fn test_fire_red_asr_v1_registered() {
+    let model = registry::get_model("fire-red-asr-v1")
+        .expect("fire-red-asr-v1 must be registered");
+    assert_eq!(model.backend, registry::BackendKind::FireRedAsr);
+    assert_eq!(model.files.len(), 3, "should have encoder + decoder + tokens");
+    let paths: Vec<&str> = model.files.iter().map(|f| f.relative_path).collect();
+    assert!(paths.contains(&"encoder.int8.onnx"));
+    assert!(paths.contains(&"decoder.int8.onnx"));
+    assert!(paths.contains(&"tokens.txt"));
+}
+
+#[test]
+fn test_fire_red_asr_v1_not_in_recommendation_pool() {
+    for lang in ["zh", "en", "ja", "ko", "yue", "auto"] {
+        let recs = registry::recommended_models_for_language(lang);
+        let ids: Vec<&str> = recs.iter().map(|m| m.id).collect();
+        assert!(!ids.contains(&"fire-red-asr-v1"),
+            "fire-red-asr-v1 should NOT be recommended for {} (too large, manual only)", lang);
+    }
+}
+
+#[test]
+fn test_fire_red_asr_model_paths() {
+    let (enc, dec, tokens) = manager::fire_red_asr_model_paths("fire-red-asr-v1")
+        .expect("paths should resolve");
+    assert!(enc.ends_with(std::path::Path::new("encoder.int8.onnx")));
+    assert!(dec.ends_with(std::path::Path::new("decoder.int8.onnx")));
+    assert!(tokens.ends_with(std::path::Path::new("tokens.txt")));
+}
