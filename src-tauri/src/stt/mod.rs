@@ -1,3 +1,4 @@
+pub mod fire_red_asr_backend;
 pub mod moonshine_backend;
 pub mod paraformer_backend;
 pub mod sensevoice_backend;
