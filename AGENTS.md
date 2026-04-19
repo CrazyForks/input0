@@ -127,7 +127,7 @@ docs/                         # 设计文档与需求记录
 | [docs/feature-esc-cancel.md](docs/feature-esc-cancel.md) | ESC 取消语音输入 | 2026-03-31 |
 | [docs/feature-ui-redesign-sidebar.md](docs/feature-ui-redesign-sidebar.md) | Sidebar + 多页面布局 | 2026-04-01 |
 | [docs/feature-prompt-optimization.md](docs/feature-prompt-optimization.md) | LLM 文本纠错 Prompt 优化 + 历史上下文 | 2026-04-03 |
-| [docs/landing-page-brief.md](docs/landing-page-brief.md) | Landing Page Brief：品牌文案、功能清单、设计系统规范 | 2026-04-06 |
+| [docs/landing-page-brief.md](docs/landing-page-brief.md) | Landing Page Brief：品牌文案、功能清单、设计系统规范 | 2026-04-19 |
 | [docs/feature-text-structuring.md](docs/feature-text-structuring.md) | 文本结构化优化（可选 toggle，LLM 自动换行/列表/段落） | 2026-04-10 |
 | [docs/feature-vocabulary.md](docs/feature-vocabulary.md) | 词汇库：手动管理 + 自动学习 + Prompt 注入（纯正确词汇模型） | 2026-04-06 |
 | [docs/feature-active-app-context.md](docs/feature-active-app-context.md) | 活跃应用名称作为 LLM 轻量级领域信号 | 2026-04-06 |

@@ -52,8 +52,8 @@
 ### 3.2 本地 AI 转录
 
 **标题**：Privacy-First Architecture
-**描述**：Whisper、SenseVoice、Paraformer、Moonshine——四大本地 AI 引擎通过 Metal GPU 完全在你的 Mac 上本地运行，音频数据永不离开设备。文本优化可连接你自己的 LLM API，完全掌控数据流。
-**关键词**：四大引擎、本地模型、隐私保护、Metal 加速、Apple Silicon 优化
+**描述**：Whisper、SenseVoice、Paraformer、Moonshine、FireRedASR、Zipformer CTC——六大本地 AI 引擎通过 Metal GPU 完全在你的 Mac 上本地运行，音频数据永不离开设备。文本优化可连接你自己的 LLM API，完全掌控数据流。
+**关键词**：六大引擎、本地模型、隐私保护、Metal 加速、Apple Silicon 优化
 **支持模型**：
 
 | 模型 | 大小 | 最佳场景 |
@@ -66,7 +66,10 @@
 | Whisper Large v3 Turbo Q5 | ~547MB | 高精度量化版，平衡大小与质量 |
 | SenseVoice Small | ~228MB | 中文/日文/韩文识别最佳 |
 | Paraformer 中文 | ~217MB | 中文专用，推理极快 |
+| Paraformer 中英粤三语版 | ~234MB | 中文 + 英文 + 粤语，粤语唯一可用模型 |
 | Moonshine Base (EN) | ~274MB | 英文专用，速度约为 Whisper 的 5 倍 |
+| FireRedASR Large v1 | ~1.74GB | 中文 ASR SOTA（CER ≈ 2%），追求极致精度 |
+| Zipformer 中文 CTC | ~350MB | 新一代 Kaldi 架构，中文离线轻量备选 |
 
 ### 3.3 AI 文本优化
 
@@ -83,7 +86,7 @@
 ### 3.5 多语言支持
 
 **标题**：Speak Any Language
-**描述**：四大 AI 引擎、9 个模型，覆盖 99+ 种语言，支持中文、English、日本語、한국어、Español、Français、Deutsch 等。系统会根据你的语言自动推荐最佳模型。
+**描述**：六大 AI 引擎、12 个模型，覆盖 99+ 种语言，支持中文、English、日本語、한국어、Español、Français、Deutsch、粤语等。系统会根据你的语言自动推荐最佳模型。
 **关键词**：多语言、自动检测、智能推荐、99+ 语言
 
 ### 3.6 模型按需管理
@@ -267,7 +270,7 @@ macOS NSPanel + native blur view
 
 | 维度 | Input 0 | 竞品常见方案 |
 |------|---------|-------------|
-| STT 引擎 | 四大引擎（Whisper + SenseVoice + Paraformer + Moonshine），9 个模型，按语言智能推荐 | 通常只有 Whisper |
+| STT 引擎 | 六大引擎（Whisper + SenseVoice + Paraformer + Moonshine + FireRedASR + Zipformer CTC），12 个模型，按语言智能推荐（含粤语） | 通常只有 Whisper |
 | 中文优化 | 40+ 拼音→技术术语纠错 + 简繁体引导 | 无或需手动修正 |
 | 文本优化 | LLM 驱动 + 10 条历史上下文 + 自定义词汇库 | 简单后处理或无 |
 | 隐私 | STT 完全本地，仅文本优化可选用外部 LLM | 部分产品需云端 STT |

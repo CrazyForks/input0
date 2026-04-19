@@ -18,10 +18,10 @@ Local AI transcription → LLM text optimization → auto-paste. Private, fast, 
 ## Features
 
 - **Press & Speak** — Hold `Option+Space` (customizable) to record, release to transcribe + optimize + paste. No window switching needed.
-- **Privacy-First Local STT** — Four AI engines (Whisper, SenseVoice, Paraformer, Moonshine) run entirely on your Mac via Metal GPU. Audio never leaves your device.
+- **Privacy-First Local STT** — Six AI engines (Whisper, SenseVoice, Paraformer, Moonshine, FireRedASR, Zipformer CTC) run entirely on your Mac via Metal GPU. Audio never leaves your device.
 - **AI-Powered Polish** — LLM auto-corrects grammar, removes filler words, and structures your text. Built-in technical term correction (e.g. phonetic Chinese → "React"), with custom vocabulary support.
 - **Auto-Paste Anywhere** — Optimized text is automatically pasted into your active input field — Slack, WeChat, VS Code, browsers, any app.
-- **99+ Languages** — 4 engines, 9 models, covering 99+ languages. The system recommends the best model based on your language.
+- **99+ Languages** — 6 engines, 12 models, covering 99+ languages. The system recommends the best model based on your language.
 - **On-Demand Models** — Lightweight app, download only the STT models you need. One-click switch, progress display, smart recommendations.
 - **ESC to Cancel** — Cancel at any stage (recording, transcribing, optimizing) by pressing ESC.
 - **History** — Review past transcriptions with original and AI-optimized text side by side.
@@ -88,7 +88,9 @@ Click **Test Connection** to verify your API key works.
 | Chinese | SenseVoice Small | ~228 MB |
 | English | Whisper Large v3 Turbo | ~1.5 GB |
 | Japanese / Korean | SenseVoice Small | ~228 MB |
+| Cantonese | Paraformer Trilingual (zh/en/yue) | ~234 MB |
 | Multiple languages | Whisper Large v3 | ~2.9 GB |
+| Chinese SOTA (highest accuracy) | FireRedASR Large v1 | ~1.74 GB |
 | Want the fastest | Moonshine Base (EN-only) | ~274 MB |
 | Want smallest download | Whisper Base | ~142 MB |
 
@@ -145,7 +147,10 @@ If a model download fails or gets stuck:
 | Whisper Large v3 Turbo Q5 | ~547 MB | Quantized high-accuracy, balanced size |
 | SenseVoice Small | ~228 MB | Best for Chinese / Japanese / Korean |
 | Paraformer Chinese | ~217 MB | Chinese-optimized, ultra-fast inference |
+| Paraformer Trilingual | ~234 MB | Chinese + English + Cantonese (only Cantonese-capable model) |
 | Moonshine Base (EN) | ~274 MB | English-only, ~5x faster than Whisper |
+| FireRedASR Large v1 | ~1.74 GB | Chinese ASR SOTA (CER ≈ 2%), for maximum accuracy |
+| Zipformer CTC (Chinese) | ~350 MB | Offline Chinese CTC, next-gen Kaldi, lightweight |
 
 ## License
 
