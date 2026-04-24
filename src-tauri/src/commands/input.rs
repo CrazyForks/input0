@@ -4,7 +4,7 @@ use tauri::Manager;
 use crate::input::{self, paste, hotkey};
 use crate::errors::AppError;
 use crate::{
-    config, is_fn_hotkey, register_pipeline_shortcut, unregister_pipeline_shortcut,
+    config, is_single_key_hotkey, register_pipeline_shortcut, unregister_pipeline_shortcut,
     CurrentShortcut,
 };
 
@@ -27,7 +27,7 @@ pub fn get_tauri_shortcut(hotkey_str: String) -> Result<String, AppError> {
 
 #[command]
 pub fn update_hotkey(app: AppHandle, hotkey_str: String) -> Result<(), AppError> {
-    if !is_fn_hotkey(&hotkey_str) {
+    if !is_single_key_hotkey(&hotkey_str) {
         hotkey::to_tauri_shortcut(&hotkey_str)?;
     }
 
