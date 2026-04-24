@@ -119,4 +119,19 @@ mod tests {
     fn test_paste_text() {
         paste_text("test paste").unwrap();
     }
+
+    #[test]
+    fn update_hotkey_accepts_all_single_keys_without_combo_validation() {
+        // Combo validation (to_tauri_shortcut) would choke on bare single-key names;
+        // confirm is_single_key gates them out so update_hotkey skips combo parsing.
+        for raw in [
+            "Fn", "RightOption", "LeftOption",
+            "RightCommand", "LeftCommand",
+            "RightControl", "LeftControl",
+            "RightShift", "LeftShift",
+        ] {
+            assert!(is_single_key(raw));
+        }
+        assert!(!is_single_key("Option+Space"));
+    }
 }
