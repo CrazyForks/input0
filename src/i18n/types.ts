@@ -114,6 +114,9 @@ export interface Translations {
     hotkeySingleKeyWarningRightOption: string;
     hotkeySingleKeyWarningCommand: string;
     hotkeySingleKeyWarningFn: string;
+    hotkeyPermissionBannerTitle: string;
+    hotkeyPermissionBannerBody: string;
+    hotkeyPermissionBannerAction: string;
     textStructuringLabel: string;
     textStructuringHint: string;
     sttModelTitle: string;

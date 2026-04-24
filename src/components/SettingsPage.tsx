@@ -182,6 +182,7 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
   const [isAddingCustomModel, setIsAddingCustomModel] = useState(false);
   const [customModelDraft, setCustomModelDraft] = useState("");
   const [isRecordingHotkey, setIsRecordingHotkey] = useState(false);
+  const [accessibilityError, setAccessibilityError] = useState(false);
   const SINGLE_KEY_PRESETS = [
     "Fn",
     "RightOption", "LeftOption",
@@ -350,6 +351,38 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
                   </div>
 
                   <div className="p-4 sm:p-5">
+                    {accessibilityError && (
+                      <div
+                        className="mb-4 rounded-md border p-3"
+                        style={{
+                          backgroundColor: "var(--theme-warning-bg)",
+                          borderColor: "var(--theme-warning-border)",
+                        }}
+                      >
+                        <p
+                          className="text-sm font-medium"
+                          style={{ color: "var(--theme-warning-text)" }}
+                        >
+                          {t.settings.hotkeyPermissionBannerTitle}
+                        </p>
+                        <p
+                          className="mt-1 text-xs"
+                          style={{ color: "var(--theme-warning-text)" }}
+                        >
+                          {t.settings.hotkeyPermissionBannerBody}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            await invoke("open_accessibility_settings");
+                            setAccessibilityError(false);
+                          }}
+                          className="mt-2 rounded-md bg-[var(--theme-primary)] px-3 py-1 text-xs font-medium text-white hover:bg-[var(--theme-primary-hover)] transition-colors"
+                        >
+                          {t.settings.hotkeyPermissionBannerAction}
+                        </button>
+                      </div>
+                    )}
                     <div className="flex items-center justify-between">
                     <div>
                       <h3 className="text-sm font-medium text-[var(--theme-on-surface)]">{t.settings.hotkeyLabel}</h3>
@@ -363,7 +396,11 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
                             try {
                               await updateHotkey(newHotkey);
                               onToast(t.settings.hotkeyChanged, "success");
-                            } catch {
+                            } catch (err) {
+                              const message = String(err ?? "");
+                              if (message.toLowerCase().includes("accessibility")) {
+                                setAccessibilityError(true);
+                              }
                               onToast(t.settings.hotkeyChangeFailed, "error");
                             }
                           }}
@@ -391,7 +428,11 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
                                   try {
                                     await updateHotkey(lastCustomHotkey);
                                     onToast(t.settings.hotkeyChanged, "success");
-                                  } catch {
+                                  } catch (err) {
+                                    const message = String(err ?? "");
+                                    if (message.toLowerCase().includes("accessibility")) {
+                                      setAccessibilityError(true);
+                                    }
                                     onToast(t.settings.hotkeyChangeFailed, "error");
                                   }
                                 } else {
@@ -403,7 +444,11 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
                               try {
                                 await updateHotkey(value);
                                 onToast(t.settings.hotkeyChanged, "success");
-                              } catch {
+                              } catch (err) {
+                                const message = String(err ?? "");
+                                if (message.toLowerCase().includes("accessibility")) {
+                                  setAccessibilityError(true);
+                                }
                                 onToast(t.settings.hotkeyChangeFailed, "error");
                               }
                             }}
