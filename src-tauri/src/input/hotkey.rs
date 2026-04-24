@@ -52,3 +52,42 @@ pub fn to_tauri_shortcut(hotkey: &str) -> Result<String, AppError> {
         Ok(format!("{}+{}", tauri_modifiers.join("+"), key))
     }
 }
+
+/// Returns true if the raw hotkey string designates a single modifier key
+/// handled by the native CGEventTap monitor (as opposed to a normal
+/// key-combo handled by `tauri-plugin-global-shortcut`).
+pub fn is_single_key(raw: &str) -> bool {
+    #[cfg(target_os = "macos")]
+    {
+        crate::input::single_key_monitor::SingleKey::from_raw(raw).is_some()
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        raw.trim().eq_ignore_ascii_case("Fn")
+    }
+}
+
+#[cfg(test)]
+mod single_key_tests {
+    use super::*;
+
+    #[test]
+    fn is_single_key_true_for_fn_and_all_split_modifiers() {
+        for raw in [
+            "Fn", "RightOption", "LeftOption",
+            "RightCommand", "LeftCommand",
+            "RightControl", "LeftControl",
+            "RightShift", "LeftShift",
+        ] {
+            assert!(is_single_key(raw), "expected single-key: {raw}");
+        }
+    }
+
+    #[test]
+    fn is_single_key_false_for_combos_and_plain_keys() {
+        assert!(!is_single_key("Option+Space"));
+        assert!(!is_single_key("Command+Shift+R"));
+        assert!(!is_single_key("Space"));
+        assert!(!is_single_key(""));
+    }
+}
