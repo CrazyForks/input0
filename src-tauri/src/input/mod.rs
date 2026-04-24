@@ -1,8 +1,6 @@
 pub mod hotkey;
 pub mod paste;
 #[cfg(target_os = "macos")]
-pub mod fn_monitor;
-#[cfg(target_os = "macos")]
 pub mod single_key_monitor;
 #[cfg(test)]
 mod tests;

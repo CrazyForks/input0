@@ -58,12 +58,6 @@ pub fn is_single_key_hotkey(raw: &str) -> bool {
     input::hotkey::is_single_key(raw)
 }
 
-/// Back-compat alias, removed in Task 6.
-#[deprecated = "use is_single_key_hotkey"]
-pub fn is_fn_hotkey(raw: &str) -> bool {
-    is_single_key_hotkey(raw)
-}
-
 /// Handle the "pressed" edge of the activation hotkey. Invoked from both the
 /// global-shortcut callback and the native Fn key monitor.
 pub fn trigger_pipeline_pressed(app: &tauri::AppHandle) {
