@@ -5,7 +5,7 @@
 #![cfg(target_os = "macos")]
 
 use std::ffi::c_void;
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicPtr, Ordering};
 use std::sync::{Arc, Mutex};
 use std::thread::{self, JoinHandle};
 
@@ -151,11 +151,17 @@ extern "C" {
     fn CFMachPortInvalidate(port: CFMachPortRefRaw);
 }
 
+#[link(name = "CoreFoundation", kind = "framework")]
+extern "C" {
+    fn CFRelease(cf: *const c_void);
+}
+
 type Callback = Arc<dyn Fn(bool) + Send + Sync + 'static>;
 
 struct MonitorContext {
     target_key: SingleKey,
     pressed: AtomicBool,
+    tap_port: AtomicPtr<c_void>,
     callback: Callback,
 }
 
@@ -190,9 +196,11 @@ unsafe extern "C" fn tap_callback(
     if event_type == K_CG_EVENT_TAP_DISABLED_BY_TIMEOUT
         || event_type == K_CG_EVENT_TAP_DISABLED_BY_USER_INPUT
     {
-        if let Ok(guard) = MONITORS.lock() {
-            if let Some(h) = guard.as_ref() {
-                CGEventTapEnable(h.tap_port, true);
+        if !user_info.is_null() {
+            let ctx = &*(user_info as *const MonitorContext);
+            let port = ctx.tap_port.load(Ordering::Acquire);
+            if !port.is_null() {
+                CGEventTapEnable(port, true);
             }
         }
         return event;
@@ -231,6 +239,7 @@ where
     let context = Arc::new(MonitorContext {
         target_key: key,
         pressed: AtomicBool::new(false),
+        tap_port: AtomicPtr::new(std::ptr::null_mut()),
         callback: Arc::new(callback),
     });
 
@@ -264,6 +273,9 @@ where
             return;
         }
 
+        // Store tap_port in the context so tap_callback can re-enable without locking MONITORS.
+        ctx_for_thread.tap_port.store(tap, Ordering::Release);
+
         let source = unsafe { CFMachPortCreateRunLoopSource(std::ptr::null(), tap, 0) };
         if source.is_null() {
             unsafe { CFMachPortInvalidate(tap) };
@@ -274,6 +286,9 @@ where
         let run_loop = unsafe { CFRunLoopGetCurrent() };
         unsafe {
             CFRunLoopAddSource(run_loop, source, kCFRunLoopCommonModes);
+            // CFMachPortCreateRunLoopSource returns a +1 retain; balance it now that
+            // the run-loop holds its own reference.
+            CFRelease(source as *const c_void);
             CGEventTapEnable(tap, true);
         }
 
