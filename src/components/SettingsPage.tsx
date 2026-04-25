@@ -182,7 +182,16 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
   const [isAddingCustomModel, setIsAddingCustomModel] = useState(false);
   const [customModelDraft, setCustomModelDraft] = useState("");
   const [isRecordingHotkey, setIsRecordingHotkey] = useState(false);
-  const isPresetHotkey = (h: string) => h === "Option+Space" || h === "Fn";
+  const [accessibilityError, setAccessibilityError] = useState(false);
+  const SINGLE_KEY_PRESETS = [
+    "Fn",
+    "RightOption", "LeftOption",
+    "RightCommand", "LeftCommand",
+    "RightControl", "LeftControl",
+    "RightShift", "LeftShift",
+  ] as const;
+  const isPresetHotkey = (h: string) =>
+    h === "Option+Space" || (SINGLE_KEY_PRESETS as readonly string[]).includes(h);
   const [lastCustomHotkey, setLastCustomHotkey] = useState<string>(() =>
     !isPresetHotkey(hotkey) && hotkey ? hotkey : ""
   );
@@ -341,7 +350,40 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
                     </select>
                   </div>
 
-                  <div className="p-4 sm:p-5 flex items-center justify-between">
+                  <div className="p-4 sm:p-5">
+                    {accessibilityError && (
+                      <div
+                        className="mb-4 rounded-md border p-3"
+                        style={{
+                          backgroundColor: "var(--theme-warning-bg)",
+                          borderColor: "var(--theme-warning-border)",
+                        }}
+                      >
+                        <p
+                          className="text-sm font-medium"
+                          style={{ color: "var(--theme-warning-text)" }}
+                        >
+                          {t.settings.hotkeyPermissionBannerTitle}
+                        </p>
+                        <p
+                          className="mt-1 text-xs"
+                          style={{ color: "var(--theme-warning-text)" }}
+                        >
+                          {t.settings.hotkeyPermissionBannerBody}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            await invoke("open_accessibility_settings");
+                            setAccessibilityError(false);
+                          }}
+                          className="mt-2 rounded-md bg-[var(--theme-primary)] px-3 py-1 text-xs font-medium text-white hover:bg-[var(--theme-primary-hover)] transition-colors"
+                        >
+                          {t.settings.hotkeyPermissionBannerAction}
+                        </button>
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between">
                     <div>
                       <h3 className="text-sm font-medium text-[var(--theme-on-surface)]">{t.settings.hotkeyLabel}</h3>
                       <p className="mt-1 text-xs text-[var(--theme-on-surface-variant)]">{t.settings.hotkeyHint}</p>
@@ -354,7 +396,11 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
                             try {
                               await updateHotkey(newHotkey);
                               onToast(t.settings.hotkeyChanged, "success");
-                            } catch {
+                            } catch (err) {
+                              const message = String(err ?? "");
+                              if (message.toLowerCase().includes("accessibility")) {
+                                setAccessibilityError(true);
+                              }
                               onToast(t.settings.hotkeyChangeFailed, "error");
                             }
                           }}
@@ -382,7 +428,11 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
                                   try {
                                     await updateHotkey(lastCustomHotkey);
                                     onToast(t.settings.hotkeyChanged, "success");
-                                  } catch {
+                                  } catch (err) {
+                                    const message = String(err ?? "");
+                                    if (message.toLowerCase().includes("accessibility")) {
+                                      setAccessibilityError(true);
+                                    }
                                     onToast(t.settings.hotkeyChangeFailed, "error");
                                   }
                                 } else {
@@ -394,14 +444,30 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
                               try {
                                 await updateHotkey(value);
                                 onToast(t.settings.hotkeyChanged, "success");
-                              } catch {
+                              } catch (err) {
+                                const message = String(err ?? "");
+                                if (message.toLowerCase().includes("accessibility")) {
+                                  setAccessibilityError(true);
+                                }
                                 onToast(t.settings.hotkeyChangeFailed, "error");
                               }
                             }}
                             className="rounded-md border border-[var(--theme-outline-variant)] bg-[var(--theme-input-bg)] py-1.5 pl-3 pr-8 text-sm text-[var(--theme-on-surface)] focus:border-[var(--theme-input-focus-border)] focus:ring-2 focus:ring-[var(--theme-input-focus-border)] outline-none transition-shadow"
                           >
-                            <option value="Option+Space" className="bg-[var(--theme-surface)] text-[var(--theme-on-surface)]">{t.settings.hotkeyPresetOptionSpace}</option>
-                            <option value="Fn" className="bg-[var(--theme-surface)] text-[var(--theme-on-surface)]">{t.settings.hotkeyPresetFn}</option>
+                            <optgroup label={t.settings.hotkeyComboGroup}>
+                              <option value="Option+Space" className="bg-[var(--theme-surface)] text-[var(--theme-on-surface)]">{t.settings.hotkeyPresetOptionSpace}</option>
+                            </optgroup>
+                            <optgroup label={t.settings.hotkeySingleKeyGroup}>
+                              <option value="Fn" className="bg-[var(--theme-surface)] text-[var(--theme-on-surface)]">{t.settings.hotkeyPresetFn}</option>
+                              <option value="RightOption" className="bg-[var(--theme-surface)] text-[var(--theme-on-surface)]">{t.settings.hotkeyPresetRightOption}</option>
+                              <option value="LeftOption" className="bg-[var(--theme-surface)] text-[var(--theme-on-surface)]">{t.settings.hotkeyPresetLeftOption}</option>
+                              <option value="RightCommand" className="bg-[var(--theme-surface)] text-[var(--theme-on-surface)]">{t.settings.hotkeyPresetRightCommand}</option>
+                              <option value="LeftCommand" className="bg-[var(--theme-surface)] text-[var(--theme-on-surface)]">{t.settings.hotkeyPresetLeftCommand}</option>
+                              <option value="RightControl" className="bg-[var(--theme-surface)] text-[var(--theme-on-surface)]">{t.settings.hotkeyPresetRightControl}</option>
+                              <option value="LeftControl" className="bg-[var(--theme-surface)] text-[var(--theme-on-surface)]">{t.settings.hotkeyPresetLeftControl}</option>
+                              <option value="RightShift" className="bg-[var(--theme-surface)] text-[var(--theme-on-surface)]">{t.settings.hotkeyPresetRightShift}</option>
+                              <option value="LeftShift" className="bg-[var(--theme-surface)] text-[var(--theme-on-surface)]">{t.settings.hotkeyPresetLeftShift}</option>
+                            </optgroup>
                             <option value="__custom__" className="bg-[var(--theme-surface)] text-[var(--theme-on-surface)]">
                               {lastCustomHotkey
                                 ? `${t.settings.hotkeyPresetCustom}: ${lastCustomHotkey}`
@@ -411,6 +477,22 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
                         </>
                       )}
                     </div>
+                    </div>
+                    {hotkey === "RightOption" && (
+                      <p className="mt-2 text-xs text-[var(--theme-warning-text)]">
+                        {t.settings.hotkeySingleKeyWarningRightOption}
+                      </p>
+                    )}
+                    {(hotkey === "RightCommand" || hotkey === "LeftCommand") && (
+                      <p className="mt-2 text-xs text-[var(--theme-warning-text)]">
+                        {t.settings.hotkeySingleKeyWarningCommand}
+                      </p>
+                    )}
+                    {hotkey === "Fn" && (
+                      <p className="mt-2 text-xs text-[var(--theme-warning-text)]">
+                        {t.settings.hotkeySingleKeyWarningFn}
+                      </p>
+                    )}
                   </div>
 
                   <div className="p-4 sm:p-5 flex items-center justify-between">

@@ -52,9 +52,10 @@ pub fn new_pipeline_error_pending() -> PipelineErrorPending {
     PipelineErrorPending(Arc::new(AtomicBool::new(false)))
 }
 
-/// Returns true if the given raw hotkey string designates the macOS Fn key.
-pub fn is_fn_hotkey(raw: &str) -> bool {
-    raw.trim().eq_ignore_ascii_case("Fn")
+/// Returns true if the given raw hotkey designates a single modifier key
+/// handled by the native CGEventTap monitor.
+pub fn is_single_key_hotkey(raw: &str) -> bool {
+    input::hotkey::is_single_key(raw)
 }
 
 /// Handle the "pressed" edge of the activation hotkey. Invoked from both the
@@ -326,23 +327,29 @@ pub fn register_pipeline_shortcut(
     app: &tauri::AppHandle,
     raw_hotkey: &str,
 ) -> Result<(), errors::AppError> {
-    if is_fn_hotkey(raw_hotkey) {
+    if is_single_key_hotkey(raw_hotkey) {
         #[cfg(target_os = "macos")]
         {
+            use crate::input::single_key_monitor::{self, SingleKey};
+            let key = SingleKey::from_raw(raw_hotkey).ok_or_else(|| {
+                errors::AppError::Input(format!("Unknown single key: {}", raw_hotkey))
+            })?;
             let app_for_cb = app.clone();
-            return crate::input::fn_monitor::start(move |pressed| {
+            return single_key_monitor::start(key, move |pressed| {
                 if pressed {
                     trigger_pipeline_pressed(&app_for_cb);
                 } else {
                     trigger_pipeline_released(&app_for_cb);
                 }
             })
-            .map_err(|e| errors::AppError::Input(format!("Failed to start Fn monitor: {}", e)));
+            .map_err(|e| errors::AppError::Input(
+                format!("Failed to start single-key monitor: {}", e),
+            ));
         }
         #[cfg(not(target_os = "macos"))]
         {
             return Err(errors::AppError::Input(
-                "Fn key shortcut is only supported on macOS".to_string(),
+                "Single-key hotkeys are only supported on macOS".to_string(),
             ));
         }
     }
@@ -369,11 +376,12 @@ pub fn unregister_pipeline_shortcut(
     app: &tauri::AppHandle,
     raw_hotkey: &str,
 ) -> Result<(), errors::AppError> {
-    if is_fn_hotkey(raw_hotkey) {
+    if is_single_key_hotkey(raw_hotkey) {
         #[cfg(target_os = "macos")]
         {
-            return crate::input::fn_monitor::stop()
-                .map_err(|e| errors::AppError::Input(format!("Failed to stop Fn monitor: {}", e)));
+            return crate::input::single_key_monitor::stop().map_err(|e| {
+                errors::AppError::Input(format!("Failed to stop single-key monitor: {}", e))
+            });
         }
         #[cfg(not(target_os = "macos"))]
         {
@@ -657,7 +665,7 @@ pub fn run() {
             }
 
             let raw_hotkey = config.hotkey.clone();
-            if !is_fn_hotkey(&raw_hotkey) {
+            if !is_single_key_hotkey(&raw_hotkey) {
                 if let Err(e) = input::hotkey::to_tauri_shortcut(&raw_hotkey) {
                     log::warn!("Invalid hotkey config '{}': {}", raw_hotkey, e);
                 }
