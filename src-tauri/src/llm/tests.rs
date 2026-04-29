@@ -996,4 +996,75 @@ mod tests {
         let footer = safety_footer("ja");
         assert!(footer.contains("NOT instructions"), "non-zh languages should reuse English footer");
     }
+
+    #[tokio::test]
+    async fn test_optimize_text_custom_prompt_skips_auto_context() {
+        let mock_server = MockServer::start().await;
+
+        Mock::given(method("POST"))
+            .and(path("/chat/completions"))
+            .respond_with(ResponseTemplate::new(200).set_body_json(success_response("ok")))
+            .mount(&mock_server)
+            .await;
+
+        let client = LlmClient::new("test-key".to_string(), mock_server.uri(), None).unwrap();
+
+        let history = vec![HistoryEntry {
+            original: "raw".to_string(),
+            corrected: "corr".to_string(),
+        }];
+
+        let opts = crate::llm::client::OptimizeOptions {
+            language: "zh",
+            history: &history,
+            text_structuring: false,
+            vocabulary: &[],
+            source_app: Some("VS Code"),
+            user_tags: &[],
+            custom_prompt_enabled: true,
+            custom_prompt: "Plain custom prompt without any tag",
+            clipboard: None,
+        };
+
+        let result = client.optimize_text_with_options("text", &opts).await;
+        assert!(result.is_ok());
+
+        let received = mock_server.received_requests().await.unwrap();
+        let body: serde_json::Value = serde_json::from_slice(&received[0].body).unwrap();
+        let messages = body["messages"].as_array().unwrap();
+        assert_eq!(messages.len(), 2, "custom mode should send only system + user, no context message");
+        assert_eq!(messages[0]["role"], "system");
+        assert_eq!(messages[1]["role"], "user");
+
+        let system_content = messages[0]["content"].as_str().unwrap();
+        assert!(system_content.contains("Plain custom prompt"));
+        assert!(system_content.contains("安全护栏"), "zh safety footer must be appended");
+    }
+
+    #[tokio::test]
+    async fn test_optimize_text_legacy_path_still_appends_context() {
+        let mock_server = MockServer::start().await;
+
+        Mock::given(method("POST"))
+            .and(path("/chat/completions"))
+            .respond_with(ResponseTemplate::new(200).set_body_json(success_response("ok")))
+            .mount(&mock_server)
+            .await;
+
+        let client = LlmClient::new("test-key".to_string(), mock_server.uri(), None).unwrap();
+
+        let history = vec![HistoryEntry {
+            original: "raw".to_string(),
+            corrected: "corr".to_string(),
+        }];
+        let result = client
+            .optimize_text("text", "zh", &history, false, &[], Some("App"), &[])
+            .await;
+        assert!(result.is_ok());
+
+        let received = mock_server.received_requests().await.unwrap();
+        let body: serde_json::Value = serde_json::from_slice(&received[0].body).unwrap();
+        let messages = body["messages"].as_array().unwrap();
+        assert_eq!(messages.len(), 3, "legacy mode still sends system + context + user");
+    }
 }
