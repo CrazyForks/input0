@@ -65,6 +65,23 @@ export interface Translations {
     tabGeneral: string;
     tabApi: string;
     tabModels: string;
+    tabCustom: string;
+    customPromptTitle: string;
+    customPromptDescription: string;
+    customPromptEnableLabel: string;
+    customPromptInsertTagLabel: string;
+    customPromptResetToDefault: string;
+    customPromptPreview: string;
+    customPromptPreviewModalTitle: string;
+    customPromptResetConfirm: string;
+    customPromptTagDescriptions: {
+      clipboard: string;
+      vocabulary: string;
+      user_tags: string;
+      active_app: string;
+      language: string;
+      history: string;
+    };
     apiConfigTitle: string;
     apiKeyLabel: string;
     apiKeyPlaceholder: string;
