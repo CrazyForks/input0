@@ -6,6 +6,7 @@ import { useSettingsStore } from "../stores/settings-store";
 import { useUpdateStore } from "../stores/update-store";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocaleStore } from "../i18n";
+import { CustomPromptPanel } from "./CustomPromptPanel";
 
 /** Map KeyboardEvent.code to our app hotkey token (code is layout-independent) */
 function codeToHotkeyPart(code: string): string | null {
@@ -127,7 +128,7 @@ const PRESET_LLM_MODELS = [
 const LLM_DISABLED_VALUE = "__disabled__";
 const LLM_ADD_CUSTOM_VALUE = "__add_custom__";
 
-type SettingsTab = "general" | "api" | "models";
+type SettingsTab = "general" | "api" | "models" | "custom";
 
 interface SettingsPageProps {
   onToast: (message: string, type: "success" | "error") => void;
@@ -289,6 +290,7 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
     { id: "general", label: t.settings.tabGeneral },
     { id: "api", label: t.settings.tabApi },
     { id: "models", label: t.settings.tabModels },
+    { id: "custom", label: t.settings.tabCustom },
   ];
 
   return (
@@ -1337,6 +1339,18 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
                   )}
                 </div>
               </section>
+            </motion.div>
+          )}
+          {activeTab === "custom" && (
+            <motion.div
+              key="custom"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="space-y-8"
+            >
+              <CustomPromptPanel onToast={onToast} />
             </motion.div>
           )}
         </AnimatePresence>
