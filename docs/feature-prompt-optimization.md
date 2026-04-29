@@ -13,6 +13,8 @@
 
 ### Prompt 架构
 
+> **Note：** 当用户在 Settings → 自定义 中启用「自定义提示词」且非空时，本节描述的 `build_zh_prompt` / `build_en_prompt` 不参与 system prompt 构造，由用户的模板（+ 自动追加的安全尾巴）替代。详见 [feature-custom-prompt.md](feature-custom-prompt.md)。
+
 `build_system_prompt(language, text_structuring, vocabulary, user_tags)` 根据 `language` 字段分发到中英文两份精简提示词：
 
 - **`language == "zh"`** → `build_zh_prompt(...)`：通篇中文，让模型在中文语境下思考。
