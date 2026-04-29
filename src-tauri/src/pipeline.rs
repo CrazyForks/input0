@@ -322,7 +322,32 @@ pub async fn process_audio(recorded: RecordedAudio, app: AppHandle, cancel: Canc
         let history = history::load_history();
         let vocabulary = crate::vocabulary::load_vocabulary();
 
-        match client.optimize_text(&text, &config.language, &history, config.text_structuring, &vocabulary, source_app.as_deref(), &config.user_tags).await {
+        let custom_active = config.custom_prompt_enabled && !config.custom_prompt.trim().is_empty();
+        let clipboard = if custom_active && config.custom_prompt.contains("{{clipboard}}") {
+            match arboard::Clipboard::new().and_then(|mut cb| cb.get_text()) {
+                Ok(s) => Some(s),
+                Err(e) => {
+                    log::warn!("Clipboard read failed: {}; rendering empty", e);
+                    None
+                }
+            }
+        } else {
+            None
+        };
+
+        let opts = crate::llm::client::OptimizeOptions {
+            language: &config.language,
+            history: &history,
+            text_structuring: config.text_structuring,
+            vocabulary: &vocabulary,
+            source_app: source_app.as_deref(),
+            user_tags: &config.user_tags,
+            custom_prompt_enabled: config.custom_prompt_enabled,
+            custom_prompt: &config.custom_prompt,
+            clipboard: clipboard.as_deref(),
+        };
+
+        match client.optimize_text_with_options(&text, &opts).await {
             Ok(optimized) => {
                 if cancel.is_cancelled() {
                     return Err(AppError::Audio("Cancelled".to_string()));

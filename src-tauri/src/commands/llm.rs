@@ -13,9 +13,30 @@ pub async fn optimize_text(
     let client = LlmClient::new(api_key, base_url, None)?;
     let history = history::load_history();
     let config = config::load()?;
-    let text_structuring = config.text_structuring;
     let vocabulary = crate::vocabulary::load_vocabulary();
-    client.optimize_text(&text, &language, &history, text_structuring, &vocabulary, None, &config.user_tags).await
+
+    let custom_active = config.custom_prompt_enabled && !config.custom_prompt.trim().is_empty();
+    let clipboard = if custom_active && config.custom_prompt.contains("{{clipboard}}") {
+        arboard::Clipboard::new()
+            .and_then(|mut cb| cb.get_text())
+            .ok()
+    } else {
+        None
+    };
+
+    let opts = crate::llm::client::OptimizeOptions {
+        language: &language,
+        history: &history,
+        text_structuring: config.text_structuring,
+        vocabulary: &vocabulary,
+        source_app: None,
+        user_tags: &config.user_tags,
+        custom_prompt_enabled: config.custom_prompt_enabled,
+        custom_prompt: &config.custom_prompt,
+        clipboard: clipboard.as_deref(),
+    };
+
+    client.optimize_text_with_options(&text, &opts).await
 }
 
 #[tauri::command]
