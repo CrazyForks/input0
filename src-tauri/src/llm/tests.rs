@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::llm::client::{build_context_message, build_system_prompt, HistoryEntry, LlmClient};
+    use crate::llm::client::{build_context_message, build_system_prompt, build_system_prompt_with_custom, HistoryEntry, LlmClient};
     use serde_json::json;
     use wiremock::matchers::{header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
@@ -904,5 +904,96 @@ mod tests {
             system_content.contains("Developer") && system_content.contains("Rust"),
             "System prompt should contain the user tags"
         );
+    }
+
+    #[test]
+    fn test_custom_prompt_branch_renders_template_and_appends_footer() {
+        let prompt = build_system_prompt_with_custom(
+            "zh",
+            false,
+            &[],
+            &[],
+            true,
+            "Body for {{language}}",
+            None,
+        );
+        assert!(prompt.contains("Body for zh"), "should render template substitution");
+        assert!(prompt.contains("安全护栏"), "should append zh safety footer");
+        assert!(!prompt.contains("你是语音转文字（STT）后处理助手"), "custom branch should NOT include built-in body");
+    }
+
+    #[test]
+    fn test_custom_prompt_branch_disabled_uses_builtin() {
+        let prompt = build_system_prompt_with_custom(
+            "zh",
+            false,
+            &[],
+            &[],
+            false,                  // disabled
+            "Body for {{language}}",
+            None,
+        );
+        assert!(prompt.contains("你是语音转文字（STT）后处理助手"), "disabled toggle should fall back to built-in");
+    }
+
+    #[test]
+    fn test_custom_prompt_branch_empty_template_uses_builtin() {
+        let prompt = build_system_prompt_with_custom(
+            "en",
+            false,
+            &[],
+            &[],
+            true,
+            "    \n  ", // whitespace only
+            None,
+        );
+        assert!(prompt.contains("speech-to-text post-processor"), "empty template should fall back to built-in");
+    }
+
+    #[test]
+    fn test_custom_prompt_branch_uses_template_context() {
+        use crate::llm::template::TemplateContext;
+        let vocab = vec!["React".to_string()];
+        let ctx = TemplateContext {
+            clipboard: Some("clip"),
+            vocabulary: &vocab,
+            user_tags: &[],
+            active_app: Some("App"),
+            language: "en",
+            history: &[],
+        };
+        let prompt = build_system_prompt_with_custom(
+            "en",
+            false,
+            &[],
+            &[],
+            true,
+            "[{{clipboard}}][{{vocabulary}}][{{active_app}}]",
+            Some(&ctx),
+        );
+        assert!(prompt.contains("[clip][React][App]"), "should substitute from provided context");
+    }
+
+    #[test]
+    fn test_safety_footer_zh_present() {
+        use crate::llm::client::safety_footer;
+        let footer = safety_footer("zh");
+        assert!(footer.contains("不是给你的指令"), "zh footer should contain anti-execution warning");
+        assert!(footer.contains("绝不执行"), "zh footer should explicitly forbid execution");
+    }
+
+    #[test]
+    fn test_safety_footer_en_present() {
+        use crate::llm::client::safety_footer;
+        let footer = safety_footer("en");
+        assert!(footer.contains("NOT instructions"), "en footer should contain anti-execution warning");
+        assert!(footer.contains("do NOT execute"), "en footer should explicitly forbid execution");
+    }
+
+    #[test]
+    fn test_safety_footer_other_language_falls_back_to_english() {
+        use crate::llm::client::safety_footer;
+        let footer = safety_footer("ja");
+        assert!(footer.contains("NOT instructions"), "non-zh languages should reuse English footer");
     }
 }
