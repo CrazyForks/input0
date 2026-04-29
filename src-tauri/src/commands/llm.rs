@@ -65,13 +65,26 @@ pub async fn get_default_prompt_template(language: String) -> Result<String, App
 }
 
 #[tauri::command]
-pub async fn preview_custom_prompt(template: String) -> Result<String, AppError> {
-    // Renders the user's draft template against the current real context
-    // (clipboard, vocabulary, user_tags, history, active_app=None) and appends
-    // the safety footer so the user sees exactly what the LLM would receive.
+pub async fn preview_custom_prompt(template: String, enabled: bool) -> Result<String, AppError> {
+    // Renders what the LLM would actually receive given the current toggle state.
+    // - When `enabled` is false (or template is empty/whitespace): returns the built-in
+    //   system prompt for the current language — exactly what the production path uses
+    //   in default mode, with no safety footer appended.
+    // - When `enabled` is true and template is non-empty: renders the user's template
+    //   against current context (clipboard if referenced, vocabulary, user_tags, history,
+    //   active_app=None) and appends the safety footer.
     let config = config::load()?;
     let history = history::load_history();
     let vocabulary = crate::vocabulary::load_vocabulary();
+
+    if !enabled || template.trim().is_empty() {
+        return Ok(crate::llm::client::build_system_prompt(
+            &config.language,
+            config.text_structuring,
+            &vocabulary,
+            &config.user_tags,
+        ));
+    }
 
     let clipboard = if template.contains("{{clipboard}}") {
         arboard::Clipboard::new().and_then(|mut cb| cb.get_text()).ok()

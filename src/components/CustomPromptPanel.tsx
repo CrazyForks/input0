@@ -90,7 +90,10 @@ export function CustomPromptPanel({ onToast }: Props) {
   const handlePreview = async () => {
     try {
       const template = customPrompt.trim().length > 0 ? customPrompt : defaultTemplate;
-      const rendered = await invoke<string>("preview_custom_prompt", { template });
+      const rendered = await invoke<string>("preview_custom_prompt", {
+        template,
+        enabled: customPromptEnabled,
+      });
       setPreviewContent(rendered);
       setPreviewOpen(true);
     } catch (err) {
