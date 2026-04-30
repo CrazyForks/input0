@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::llm::client::{build_context_message, build_system_prompt, build_system_prompt_with_custom, HistoryEntry, LlmClient};
+    use crate::llm::client::{build_context_message, build_default_template, build_system_prompt, build_system_prompt_with_custom, HistoryEntry, LlmClient};
     use serde_json::json;
     use wiremock::matchers::{header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
@@ -1066,5 +1066,59 @@ mod tests {
         let body: serde_json::Value = serde_json::from_slice(&received[0].body).unwrap();
         let messages = body["messages"].as_array().unwrap();
         assert_eq!(messages.len(), 3, "legacy mode still sends system + context + user");
+    }
+
+    // --- Default Template Tests ---
+
+    #[test]
+    fn test_default_template_zh_uses_vocabulary_placeholder() {
+        let template = build_default_template("zh", true);
+        assert!(template.contains("{{vocabulary}}"), "zh default template should expose {{{{vocabulary}}}} placeholder");
+        assert!(template.contains("{{user_tags}}"), "zh default template should expose {{{{user_tags}}}} placeholder");
+    }
+
+    #[test]
+    fn test_default_template_en_uses_placeholders() {
+        let template = build_default_template("en", true);
+        assert!(template.contains("{{vocabulary}}"), "en default template should expose {{{{vocabulary}}}} placeholder");
+        assert!(template.contains("{{user_tags}}"), "en default template should expose {{{{user_tags}}}} placeholder");
+    }
+
+    #[test]
+    fn test_default_template_omits_inline_safety_rule() {
+        // Safety footer is auto-appended at runtime; the template should NOT duplicate it.
+        let zh = build_default_template("zh", true);
+        assert!(!zh.contains("绝不执行"), "zh default template should NOT inline the safety rule");
+        assert!(!zh.contains("不是给你的指令"), "zh default template should NOT inline the safety rule");
+
+        let en = build_default_template("en", true);
+        assert!(!en.contains("do NOT execute"), "en default template should NOT inline the safety rule");
+        assert!(!en.contains("NOT instructions"), "en default template should NOT inline the safety rule");
+    }
+
+    #[test]
+    fn test_default_template_respects_text_structuring() {
+        let zh_on = build_default_template("zh", true);
+        assert!(zh_on.contains("编号列表"), "structuring on → numbered list rule");
+
+        let zh_off = build_default_template("zh", false);
+        assert!(zh_off.contains("不要任何 markdown"), "structuring off → no-markdown rule");
+        assert!(!zh_off.contains("编号列表"), "structuring off → no numbered list rule");
+    }
+
+    #[test]
+    fn test_default_template_zh_keeps_core_rules_in_chinese() {
+        let template = build_default_template("zh", true);
+        assert!(template.contains("规则"), "zh default template should keep Chinese section header");
+        assert!(template.contains("去除语气词"), "zh default template should keep filler-removal rule");
+        assert!(template.contains("瑞嗯特"), "zh default template should keep tech-term examples");
+    }
+
+    #[test]
+    fn test_default_template_en_keeps_core_rules_in_english() {
+        let template = build_default_template("en", true);
+        assert!(template.contains("## Rules"), "en default template should keep English section header");
+        assert!(template.contains("Remove fillers"), "en default template should keep filler-removal rule");
+        assert!(template.contains("瑞嗯特"), "en default template should keep tech-term examples");
     }
 }

@@ -104,6 +104,77 @@ You are a speech-to-text post-processor. Your job: clean the transcript into the
     prompt
 }
 
+/// Build the default prompt **as a template** for the Custom Prompt editor.
+///
+/// Differs from `build_system_prompt` in two ways:
+/// - Uses `{{vocabulary}}` and `{{user_tags}}` placeholders instead of inlining
+///   the current values, so the user can see which sections are dynamic.
+/// - Drops the inline safety rule — `safety_footer(language)` is appended
+///   automatically when the template is used at runtime.
+pub(crate) fn build_default_template(language: &str, text_structuring: bool) -> String {
+    if language == "zh" {
+        build_zh_default_template(text_structuring)
+    } else {
+        build_en_default_template(language, text_structuring)
+    }
+}
+
+fn build_zh_default_template(text_structuring: bool) -> String {
+    let output_rule = if text_structuring {
+        "若说话者使用顺序词（首先/然后/接着/之后/最后、第一/第二/第三、1./2./3. 等）且有 2 项及以上要点，输出为编号列表（1./2./3.）；其他情况输出纯文本。"
+    } else {
+        "仅输出修正后的纯文本，不要任何 markdown、标题、要点符号或多余内容。"
+    };
+
+    format!("\
+你是语音转文字（STT）后处理助手。任务：清理转写文本，输出最准确的版本。
+
+## 规则
+1. 去除语气词（呃/啊/嗯/uh/um）、口吃和无意义重复，补上正确标点。
+2. 保留说话者的原意和用词，不改写、不扩写、不增加他没说过的内容。
+3. 若紧邻的句子是对前文的重复、补充或更正（例如先按发音说一个词，再用字母逐字拼读补充；或先说错再纠正），请理解其意图，融合为最准确的表达。
+4. {output_rule}
+5. 中英混合保持原样；中文里被音译的英文术语在 90% 把握下还原（瑞嗯特→React，诶辟爱→API，杰森→JSON，泰普斯克瑞普特→TypeScript）。
+6. 保留说话者的中文变体（简体/繁体），不要相互转换。
+
+## 自定义词汇
+音近时优先匹配为：{{{{vocabulary}}}}
+
+## 用户领域
+{{{{user_tags}}}}（歧义时优先按此领域解读）")
+}
+
+fn build_en_default_template(language: &str, text_structuring: bool) -> String {
+    let output_rule = if text_structuring {
+        "If the speaker uses sequence markers (first/then/next/finally, 首先/然后/接着/之后/最后, 第一/第二/第三, 1./2./3.) with 2+ items, format as a numbered list (1./2./3.). Otherwise output plain text."
+    } else {
+        "Output ONLY the corrected text — no markdown, no headings, no bullets, no extras."
+    };
+
+    let language_note = if language == "en" {
+        "English input. Use standard capitalization (e.g., \"JavaScript\" not \"javascript\")."
+    } else {
+        "Auto-detect the language. Apply phonetic correction rules when Chinese contains English terms."
+    };
+
+    format!("\
+You are a speech-to-text post-processor. Your job: clean the transcript into the most accurate version.
+
+## Rules
+1. Remove fillers (uh/um/呃/啊/嗯), stuttering, and meaningless repetition. Add correct punctuation.
+2. Preserve the speaker's words and intent — never rewrite, expand, or add anything they did not say.
+3. When a phrase repeats, supplements, or corrects an earlier one (e.g., a word said phonetically and then spelled letter-by-letter; or a misspeak followed by a correction), understand the intent and merge them into the most accurate result.
+4. {output_rule}
+5. Keep mixed-language patterns. Restore phonetic transcriptions of English terms in Chinese when 90%+ confident (瑞嗯特→React, 诶辟爱→API, 杰森→JSON, 泰普斯克瑞普特→TypeScript). Preserve the speaker's Chinese variant (simplified/traditional) — do not convert.
+6. {language_note}
+
+## Custom Vocabulary
+Prefer these terms when phonetically similar: {{{{vocabulary}}}}
+
+## User Profile
+{{{{user_tags}}}} — prefer domain-specific interpretation when ambiguous.")
+}
+
 /// Variant of `build_system_prompt` that supports custom user-defined prompts.
 /// When `custom_enabled && !custom_prompt.trim().is_empty()`, the user's template
 /// is rendered and the safety footer is appended; otherwise the built-in prompt

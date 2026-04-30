@@ -52,15 +52,14 @@ pub async fn test_api_connection(
 
 #[tauri::command]
 pub async fn get_default_prompt_template(language: String) -> Result<String, AppError> {
-    // Returns the built-in system prompt for a given language so the frontend
-    // can use it as the editor's placeholder/default content.
+    // Returns the built-in system prompt as a template, with `{{vocabulary}}`
+    // and `{{user_tags}}` placeholders left in so the user can see which parts
+    // get substituted at runtime. The safety rule is omitted because the
+    // safety footer is auto-appended when the template is used.
     let config = config::load()?;
-    let vocabulary = crate::vocabulary::load_vocabulary();
-    Ok(crate::llm::client::build_system_prompt(
+    Ok(crate::llm::client::build_default_template(
         &language,
         config.text_structuring,
-        &vocabulary,
-        &config.user_tags,
     ))
 }
 
