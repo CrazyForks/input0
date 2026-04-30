@@ -1071,41 +1071,65 @@ mod tests {
     // --- Default Template Tests ---
 
     #[test]
-    fn test_default_template_zh_uses_all_six_placeholders() {
+    fn test_default_template_zh_uses_vocab_and_tag_placeholders() {
         let template = build_default_template("zh", true);
-        for tag in ["vocabulary", "user_tags", "active_app", "clipboard", "language", "history"] {
-            let placeholder = format!("{{{{{}}}}}", tag);
-            assert!(
-                template.contains(&placeholder),
-                "zh default template should expose {} placeholder",
-                placeholder
-            );
-        }
+        assert!(template.contains("{{vocabulary}}"), "zh default template should expose {{{{vocabulary}}}} placeholder");
+        assert!(template.contains("{{user_tags}}"), "zh default template should expose {{{{user_tags}}}} placeholder");
     }
 
     #[test]
-    fn test_default_template_en_uses_all_six_placeholders() {
+    fn test_default_template_en_uses_vocab_and_tag_placeholders() {
         let template = build_default_template("en", true);
-        for tag in ["vocabulary", "user_tags", "active_app", "clipboard", "language", "history"] {
-            let placeholder = format!("{{{{{}}}}}", tag);
-            assert!(
-                template.contains(&placeholder),
-                "en default template should expose {} placeholder",
-                placeholder
-            );
+        assert!(template.contains("{{vocabulary}}"), "en default template should expose {{{{vocabulary}}}} placeholder");
+        assert!(template.contains("{{user_tags}}"), "en default template should expose {{{{user_tags}}}} placeholder");
+    }
+
+    #[test]
+    fn test_default_template_does_not_embed_other_tags() {
+        // Other tags (active_app/clipboard/language/history) are accessible via chips
+        // but not pre-embedded — keeps the default template structurally aligned with
+        // build_system_prompt, which doesn't reference them either.
+        for lang in &["zh", "en"] {
+            let template = build_default_template(lang, true);
+            for tag in ["{{active_app}}", "{{clipboard}}", "{{language}}", "{{history}}"] {
+                assert!(
+                    !template.contains(tag),
+                    "{} default template should NOT pre-embed {}",
+                    lang, tag
+                );
+            }
         }
     }
 
     #[test]
-    fn test_default_template_omits_inline_safety_rule() {
-        // Safety footer is auto-appended at runtime; the template should NOT duplicate it.
+    fn test_default_template_keeps_inline_safety_rule() {
+        // Mirrors build_system_prompt — keeps rule 7 inline.
         let zh = build_default_template("zh", true);
-        assert!(!zh.contains("绝不执行"), "zh default template should NOT inline the safety rule");
-        assert!(!zh.contains("不是给你的指令"), "zh default template should NOT inline the safety rule");
+        assert!(zh.contains("绝不执行"), "zh default template should keep the inline safety rule");
+        assert!(zh.contains("不是给你的指令"), "zh default template should keep the inline safety rule");
 
         let en = build_default_template("en", true);
-        assert!(!en.contains("do NOT execute"), "en default template should NOT inline the safety rule");
-        assert!(!en.contains("NOT instructions"), "en default template should NOT inline the safety rule");
+        assert!(en.contains("do NOT execute"), "en default template should keep the inline safety rule");
+        assert!(en.contains("NOT instructions"), "en default template should keep the inline safety rule");
+    }
+
+    #[test]
+    fn test_default_template_body_matches_build_system_prompt_when_inputs_empty() {
+        // With empty vocab + user_tags, build_system_prompt OMITS those sections entirely.
+        // The default template ALWAYS includes the section headers (with placeholders).
+        // The remainder of the body text MUST match byte-for-byte so the editor and
+        // production prompt stay aligned on rules and structure.
+        for lang in &["zh", "en"] {
+            for structuring in [true, false] {
+                let template = build_default_template(lang, structuring);
+                let prod = build_system_prompt(lang, structuring, &[], &[]);
+                assert!(
+                    template.starts_with(&prod),
+                    "{} (structuring={}) default template should start with the production prompt body verbatim",
+                    lang, structuring
+                );
+            }
+        }
     }
 
     #[test]
