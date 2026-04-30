@@ -1071,17 +1071,29 @@ mod tests {
     // --- Default Template Tests ---
 
     #[test]
-    fn test_default_template_zh_uses_vocabulary_placeholder() {
+    fn test_default_template_zh_uses_all_six_placeholders() {
         let template = build_default_template("zh", true);
-        assert!(template.contains("{{vocabulary}}"), "zh default template should expose {{{{vocabulary}}}} placeholder");
-        assert!(template.contains("{{user_tags}}"), "zh default template should expose {{{{user_tags}}}} placeholder");
+        for tag in ["vocabulary", "user_tags", "active_app", "clipboard", "language", "history"] {
+            let placeholder = format!("{{{{{}}}}}", tag);
+            assert!(
+                template.contains(&placeholder),
+                "zh default template should expose {} placeholder",
+                placeholder
+            );
+        }
     }
 
     #[test]
-    fn test_default_template_en_uses_placeholders() {
+    fn test_default_template_en_uses_all_six_placeholders() {
         let template = build_default_template("en", true);
-        assert!(template.contains("{{vocabulary}}"), "en default template should expose {{{{vocabulary}}}} placeholder");
-        assert!(template.contains("{{user_tags}}"), "en default template should expose {{{{user_tags}}}} placeholder");
+        for tag in ["vocabulary", "user_tags", "active_app", "clipboard", "language", "history"] {
+            let placeholder = format!("{{{{{}}}}}", tag);
+            assert!(
+                template.contains(&placeholder),
+                "en default template should expose {} placeholder",
+                placeholder
+            );
+        }
     }
 
     #[test]

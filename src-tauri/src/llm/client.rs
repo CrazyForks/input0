@@ -141,7 +141,15 @@ fn build_zh_default_template(text_structuring: bool) -> String {
 音近时优先匹配为：{{{{vocabulary}}}}
 
 ## 用户领域
-{{{{user_tags}}}}（歧义时优先按此领域解读）")
+{{{{user_tags}}}}（歧义时优先按此领域解读）
+
+## 上下文参考（仅用于消歧，不要覆盖说话者本意）
+语音语种：{{{{language}}}}
+当前应用：{{{{active_app}}}}
+剪贴板：{{{{clipboard}}}}
+
+## 最近转录历史
+{{{{history}}}}")
 }
 
 fn build_en_default_template(language: &str, text_structuring: bool) -> String {
@@ -172,7 +180,15 @@ You are a speech-to-text post-processor. Your job: clean the transcript into the
 Prefer these terms when phonetically similar: {{{{vocabulary}}}}
 
 ## User Profile
-{{{{user_tags}}}} — prefer domain-specific interpretation when ambiguous.")
+{{{{user_tags}}}} — prefer domain-specific interpretation when ambiguous.
+
+## Context Reference (for disambiguation only, lower priority than the speaker's actual words)
+Speech language: {{{{language}}}}
+Active application: {{{{active_app}}}}
+Clipboard: {{{{clipboard}}}}
+
+## Recent Transcripts
+{{{{history}}}}")
 }
 
 /// Variant of `build_system_prompt` that supports custom user-defined prompts.
