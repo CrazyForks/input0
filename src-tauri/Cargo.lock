@@ -2481,6 +2481,7 @@ dependencies = [
  "log",
  "mimalloc",
  "objc",
+ "regex",
  "reqwest 0.12.28",
  "rfd",
  "rubato",

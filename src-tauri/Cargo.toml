@@ -33,6 +33,7 @@ tauri-plugin-updater = "2.10.1"
 tauri-plugin-process = "2.3.1"
 tauri-plugin-log = "2"
 mimalloc = { version = "0.1", default-features = false }
+regex = "1"
 
 [dev-dependencies]
 wiremock = "0.6"
