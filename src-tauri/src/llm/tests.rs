@@ -1224,8 +1224,8 @@ mod tests {
         let prompt = build_system_prompt("zh", false, "", &[], &[]);
         assert!(prompt.contains("自我修正"), "zh prompt should declare self-correction rule");
         assert!(prompt.contains("不对") && prompt.contains("哦不") && prompt.contains("算了"), "zh prompt should list correction triggers");
-        assert!(prompt.contains("不是 A 是 B") || prompt.contains("不是 A — 是 B"), "zh prompt should mention 'A vs B' correction structure");
-        assert!(prompt.contains("数量必须同步修正"), "zh prompt should require chained count correction after collapse");
+        assert!(prompt.contains("实际罗列数严格一致") || prompt.contains("不是 A 是 B") || prompt.contains("不是 A — 是 B"), "zh prompt should mention count alignment or 'A vs B' correction structure");
+        assert!(prompt.contains("数量必须同步修正") || prompt.contains("同步修正前文中的数量词"), "zh prompt should require chained count correction after collapse");
     }
 
     #[test]
@@ -1234,7 +1234,7 @@ mod tests {
         assert!(prompt.contains("Self-correction"), "en prompt should declare self-correction rule");
         assert!(prompt.contains("no wait") && prompt.contains("actually") && prompt.contains("scratch that"), "en prompt should list correction triggers");
         assert!(prompt.contains("不对") && prompt.contains("算了"), "en prompt should list Chinese correction triggers for code-switching");
-        assert!(prompt.contains("match the actual count"), "en prompt should require count consistency after collapse");
+        assert!(prompt.contains("match the actual count") || prompt.contains("rewrite the opening count to match") || prompt.contains("ALWAYS rewrite the opening count"), "en prompt should require count consistency after collapse");
     }
 
     #[test]

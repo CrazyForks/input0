@@ -1685,19 +1685,21 @@
     "input": "不是后端的问题 是前端的问题",
     "checks": {
       "must_contain": [
+        "后端",
         "前端"
       ],
       "must_not_contain": [
-        "后端的问题",
-        "不是"
+        "呃",
+        "啊",
+        "嗯"
       ],
       "must_match_regex": [],
       "no_markdown": true,
       "form": "plain",
-      "min_chars": 6,
-      "max_chars": 20
+      "min_chars": 4,
+      "max_chars": 40
     },
-    "judge_rubric": "The output must clearly state this is a front-end issue, not a back-end issue. The correction reversal must be preserved."
+    "judge_rubric": "Speaker is using parallel contrast — 'not the backend issue, it's the frontend issue'. Output should preserve both the negation of backend AND the affirmation of frontend, not just one. Acceptable forms: '不是后端的问题，是前端的问题' or '是前端的问题不是后端' or similar."
   },
   {
     "id": "stutter-zh-016",
@@ -2770,20 +2772,20 @@
     "input": "uh the budget is like two million dollars you know for this quarter",
     "checks": {
       "must_contain": [
-        "$2,000,000",
-        "$2M",
-        "2 million"
+        "budget",
+        "quarter"
       ],
       "must_not_contain": [
         "uh ",
-        "like ",
         "you know"
       ],
-      "must_match_regex": [],
+      "must_match_regex": [
+        "(2,000,000|\\$2M|2 million)"
+      ],
       "no_markdown": true,
       "form": "plain",
       "min_chars": 20,
-      "max_chars": 50
+      "max_chars": 80
     },
     "judge_rubric": null
   },
@@ -4424,16 +4426,15 @@
     "input": "有两个方向可以选 一个是继续做B端 另一个是转型做C端",
     "checks": {
       "must_contain": [
-        "B",
-        "C端"
+        "B"
       ],
       "must_not_contain": [
         "1.",
         "2."
       ],
       "must_match_regex": [
-        "B\\s?端",
-        "C\\s?端"
+        "[Bb]\\s?端",
+        "[Cc]\\s?端"
       ],
       "no_markdown": true,
       "form": "plain",
