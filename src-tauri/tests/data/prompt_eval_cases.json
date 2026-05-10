@@ -1137,5 +1137,1145 @@
       "max_chars": 120
     },
     "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-001",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "呃 我觉得吧 嗯 这个方案 啊 还行",
+    "checks": {
+      "must_contain": ["这个方案"],
+      "must_not_contain": ["呃", "嗯", "啊"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 30
+    },
+    "judge_rubric": "Output should be a clean version of '我觉得这个方案还行' or similar — preserve the speaker's positive evaluation, no filler words."
+  },
+  {
+    "id": "stutter-zh-002",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "我我我我觉得这个不对",
+    "checks": {
+      "must_contain": ["我觉得这个不对"],
+      "must_not_contain": ["我我", "我我我"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 20
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-003",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "那个 那个 你帮我看一下这份报告",
+    "checks": {
+      "must_contain": ["报告"],
+      "must_not_contain": ["那个 那个", "那个那个"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 8,
+      "max_chars": 20
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-004",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "就是 就是 这个功能明天上线",
+    "checks": {
+      "must_contain": ["功能", "明天", "上线"],
+      "must_not_contain": ["就是 就是", "就是就是"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 8,
+      "max_chars": 20
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-005",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "嗯嗯 我今天开了三个会",
+    "checks": {
+      "must_contain": ["三个会"],
+      "must_not_contain": ["嗯嗯", "嗯 嗯"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 15
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-006",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "啊 这个 啊 代码要重构一下",
+    "checks": {
+      "must_contain": ["代码", "重构"],
+      "must_not_contain": ["啊"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 8,
+      "max_chars": 20
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-007",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "呃 下周呃 我们需要呃 交付这个项目",
+    "checks": {
+      "must_contain": ["下周", "交付", "项目"],
+      "must_not_contain": ["呃"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 10,
+      "max_chars": 25
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-008",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "他他他说明天不来了",
+    "checks": {
+      "must_contain": ["他说明天不来了"],
+      "must_not_contain": ["他他", "他他他"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 7,
+      "max_chars": 15
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-009",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "这这这个接口返回了错误",
+    "checks": {
+      "must_contain": ["接口", "错误"],
+      "must_not_contain": ["这这", "这这这"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 8,
+      "max_chars": 18
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-010",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "明天九点开会，不对，是十点",
+    "checks": {
+      "must_contain": ["10"],
+      "must_not_contain": ["不对", "九点", "9点"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 30
+    },
+    "judge_rubric": "Output must reflect the corrected time (10 o'clock / 10:00) and drop the original mistaken '九点' completely."
+  },
+  {
+    "id": "stutter-zh-011",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "我觉得吧 我觉得吧 这个方向是对的",
+    "checks": {
+      "must_contain": ["方向是对的"],
+      "must_not_contain": ["我觉得吧 我觉得吧", "我觉得吧我觉得吧"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 8,
+      "max_chars": 20
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-012",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "说真的说真的 这个需求有点难",
+    "checks": {
+      "must_contain": ["需求", "难"],
+      "must_not_contain": ["说真的说真的", "说真的 说真的"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 6,
+      "max_chars": 18
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-013",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "一步一步来 一步一步来 别着急",
+    "checks": {
+      "must_contain": ["一步一步来"],
+      "must_not_contain": ["一步一步来 一步一步来"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 6,
+      "max_chars": 18
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-014",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "不是说要删 是说要归档",
+    "checks": {
+      "must_contain": ["归档"],
+      "must_not_contain": ["不是说要删", "删"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 4,
+      "max_chars": 15
+    },
+    "judge_rubric": "Output should convey that the action is archiving, not deleting. The speaker corrected themselves — final intent is '归档'."
+  },
+  {
+    "id": "stutter-zh-015",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "不是后端的问题 是前端的问题",
+    "checks": {
+      "must_contain": ["前端"],
+      "must_not_contain": ["后端的问题", "不是"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 6,
+      "max_chars": 20
+    },
+    "judge_rubric": "The output must clearly state this is a front-end issue, not a back-end issue. The correction reversal must be preserved."
+  },
+  {
+    "id": "stutter-zh-016",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "不是用户的锅 是我们系统的bug",
+    "checks": {
+      "must_contain": ["系统"],
+      "must_not_contain": ["用户的锅", "不是"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 8,
+      "max_chars": 20
+    },
+    "judge_rubric": "Output must attribute the issue to the system/code, not the user. The '不是 A 是 B' correction should result in only B being expressed."
+  },
+  {
+    "id": "stutter-zh-017",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "不是明天上线 是后天上线",
+    "checks": {
+      "must_contain": ["后天"],
+      "must_not_contain": ["明天上线", "不是"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 15
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-018",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "不是减少 是增加预算",
+    "checks": {
+      "must_contain": ["增加预算"],
+      "must_not_contain": ["减少", "不是"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 15
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-019",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "不是第三方库的问题 是我们自己代码的问题",
+    "checks": {
+      "must_contain": ["自己代码"],
+      "must_not_contain": ["第三方库的问题", "不是"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 8,
+      "max_chars": 20
+    },
+    "judge_rubric": "The output must correctly place the blame on internal code, not a third-party library."
+  },
+  {
+    "id": "stutter-zh-020",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "用户增长了百分之十五，不对是百分之二十五",
+    "checks": {
+      "must_contain": ["25%"],
+      "must_not_contain": ["15%", "百分之十五", "百分之二十五", "不对"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 30
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-021",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "团队规模是二十人，不对，是三十人",
+    "checks": {
+      "must_contain": ["30"],
+      "must_not_contain": ["20", "二十人", "三十人", "不对"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 20
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-022",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "接口延迟是五百毫秒，不对，是两百毫秒",
+    "checks": {
+      "must_contain": ["200ms"],
+      "must_not_contain": ["500ms", "五百", "两百", "不对"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 25
+    },
+    "judge_rubric": "Output must show the corrected latency value of 200ms, not 500ms."
+  },
+  {
+    "id": "stutter-zh-023",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "会议在三楼，啊不对，是五楼",
+    "checks": {
+      "must_contain": ["5"],
+      "must_not_contain": ["3楼", "三楼", "不对", "啊不对"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 15
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-024",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "截止日期是六号，不对，是八号",
+    "checks": {
+      "must_contain": ["8"],
+      "must_not_contain": ["六号", "不对"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 15
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-025",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "瑞嗯特，就是 R-E-A-C-T，是我们前端的框架",
+    "checks": {
+      "must_contain": ["React"],
+      "must_not_contain": ["瑞嗯特", "R-E-A-C-T"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 8,
+      "max_chars": 20
+    },
+    "judge_rubric": "The phonetic '瑞嗯特' and spelled-out 'R-E-A-C-T' should both collapse into 'React'. The output should sound natural."
+  },
+  {
+    "id": "stutter-zh-026",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "吉特，就是 G-I-T，用来管理代码版本",
+    "checks": {
+      "must_contain": ["Git"],
+      "must_not_contain": ["吉特", "G-I-T"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 8,
+      "max_chars": 20
+    },
+    "judge_rubric": "The phonetic '吉特' and the spelled 'G-I-T' together indicate Git. The output should say 'Git' naturally."
+  },
+  {
+    "id": "stutter-zh-027",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "用赛艾斯哦，就是 C-S-S，写样式",
+    "checks": {
+      "must_contain": ["CSS"],
+      "must_not_contain": ["赛艾斯哦", "C-S-S"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 15
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-028",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "接口文档用斯沃格，就是 S-W-A-G-G-E-R",
+    "checks": {
+      "must_contain": ["Swagger"],
+      "must_not_contain": ["斯沃格", "S-W-A-G-G-E-R"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 8,
+      "max_chars": 20
+    },
+    "judge_rubric": "Phonetic '斯沃格' + spelled 'S-W-A-G-G-E-R' should merge to 'Swagger'. Output should read naturally."
+  },
+  {
+    "id": "stutter-zh-029",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "消息队列用卡夫卡，就是 K-A-F-K-A",
+    "checks": {
+      "must_contain": ["Kafka"],
+      "must_not_contain": ["卡夫卡", "K-A-F-K-A"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 8,
+      "max_chars": 20
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-030",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "搜索引擎用伊拉斯提克，就是 E-L-K",
+    "checks": {
+      "must_contain": ["ELK"],
+      "must_not_contain": ["伊拉斯提克", "E-L-K"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 20
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-031",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "预算两千三百，不对，两千五百",
+    "checks": {
+      "must_contain": ["2500"],
+      "must_not_contain": ["2300", "两千三百", "两千五百", "不对"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 25
+    },
+    "judge_rubric": "The corrected budget figure must be 2500. The original wrong figure 2300 must not appear."
+  },
+  {
+    "id": "stutter-zh-032",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "服务器有三十二核，不对，是六十四核",
+    "checks": {
+      "must_contain": ["64"],
+      "must_not_contain": ["32", "三十二", "六十四", "不对"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 20
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-033",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "今年销售额三百万，啊不对，是三千万",
+    "checks": {
+      "must_contain": ["3000"],
+      "must_not_contain": ["300", "三百万", "三千万", "不对"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 20
+    },
+    "judge_rubric": "Output must show the corrected figure of 30 million (3000万). The tenfold difference matters."
+  },
+  {
+    "id": "stutter-zh-034",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "响应时间一百毫秒，不对，五十毫秒",
+    "checks": {
+      "must_contain": ["50ms"],
+      "must_not_contain": ["100ms", "一百", "五十", "不对"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 20
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-035",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "内存占用四个G，不对，是八个G",
+    "checks": {
+      "must_contain": ["8GB"],
+      "must_not_contain": ["4GB", "四个G", "八个G", "不对"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 20
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-036",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "磁盘空间五十个G，啊 不对是一百个G",
+    "checks": {
+      "must_contain": ["100GB"],
+      "must_not_contain": ["50GB", "五十个G", "一百个G", "不对"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 20
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-037",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "我想说三件事 第一是优化性能 第二是修复bug 啊算了 就说两件事好了",
+    "checks": {
+      "must_contain": ["性能", "bug"],
+      "must_not_contain": ["三件", "第三"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 15,
+      "max_chars": 50
+    },
+    "judge_rubric": "The speaker self-corrected from 3 items to 2. Output must list exactly 2 items (performance + bug fix) and not mention '三件事' or imply a third item."
+  },
+  {
+    "id": "stutter-zh-038",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "今天有四个任务 第一是写文档 第二是做测试 第三是代码review 嗯算了 只做两个",
+    "checks": {
+      "must_contain": ["文档", "测试"],
+      "must_not_contain": ["四个", "第四", "review", "第三"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 10,
+      "max_chars": 40
+    },
+    "judge_rubric": "The speaker narrowed from 4 tasks to 2. Only '写文档' and '做测试' should appear. '代码review' and any mention of 4 or 3 tasks should be absent."
+  },
+  {
+    "id": "stutter-zh-039",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "要做五个模块 登录 注册 首页 详情 啊不对 就做三个 登录 注册 首页",
+    "checks": {
+      "must_contain": ["登录", "注册", "首页"],
+      "must_not_contain": ["五个", "详情", "不对"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 10,
+      "max_chars": 30
+    },
+    "judge_rubric": "Output must list exactly three modules: 登录、注册、首页. '详情' and any reference to 5 modules must be absent."
+  },
+  {
+    "id": "stutter-zh-040",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "分享两点经验 第一是多写代码 第二是多读文档 对了还有第三点 多交流 但第三点最重要",
+    "checks": {
+      "must_contain": ["代码", "文档", "交流"],
+      "must_not_contain": ["两点"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 15,
+      "max_chars": 50
+    },
+    "judge_rubric": "The speaker expanded from 2 to 3 points mid-sentence. Output must reflect all 3 points (写代码、读文档、交流) and adjust count accordingly."
+  },
+  {
+    "id": "stutter-zh-041",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "说三个优化点 第一减少请求 第二缓存数据 第三压缩图片 嗯其实第一点最重要",
+    "checks": {
+      "must_contain": ["请求", "缓存", "压缩"],
+      "must_not_contain": ["嗯其实"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 15,
+      "max_chars": 50
+    },
+    "judge_rubric": "All 3 optimization points must appear. The filler commentary '嗯其实第一点最重要' should be dropped or integrated cleanly."
+  },
+  {
+    "id": "stutter-zh-042",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "呃 这个bug出现在登录页 嗯 大概是token过期的问题 啊 需要刷新一下",
+    "checks": {
+      "must_contain": ["登录", "token"],
+      "must_not_contain": ["呃", "嗯", "啊"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 15,
+      "max_chars": 40
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-043",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "就是 我想说的是 就是 用户体验很重要",
+    "checks": {
+      "must_contain": ["用户体验"],
+      "must_not_contain": ["就是 就是", "就是我想说的是 就是"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 6,
+      "max_chars": 15
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-044",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "那个 这次发布 那个 我们要做好回滚计划",
+    "checks": {
+      "must_contain": ["发布", "回滚"],
+      "must_not_contain": ["那个"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 10,
+      "max_chars": 20
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-045",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "嗯 这个任务嗯 优先级比较高 嗯嗯 下午之前要完成",
+    "checks": {
+      "must_contain": ["优先级", "下午"],
+      "must_not_contain": ["嗯"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 10,
+      "max_chars": 25
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-zh-046",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "不是要删除数据 是要软删除 就是加个deleted字段",
+    "checks": {
+      "must_contain": ["软删除", "deleted"],
+      "must_not_contain": ["不是要删除", "删除数据"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 10,
+      "max_chars": 25
+    },
+    "judge_rubric": "The speaker clarified the operation is soft-delete (软删除), not hard delete. Output must reflect the soft-delete intent with the 'deleted' field approach."
+  },
+  {
+    "id": "stutter-zh-047",
+    "scenario": "stutter",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "呃 这个版本我们支持 嗯 三个平台 啊 苹果 安卓 网页",
+    "checks": {
+      "must_contain": ["苹果", "安卓", "网页"],
+      "must_not_contain": ["呃", "嗯", "啊"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 12,
+      "max_chars": 25
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-en-001",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "uh I I I think the the the plan is okay",
+    "checks": {
+      "must_contain": ["plan"],
+      "must_not_contain": ["uh ", "I I", "the the"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 10,
+      "max_chars": 40
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-en-002",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "um we we need to fix this bug before the release",
+    "checks": {
+      "must_contain": ["fix", "bug", "release"],
+      "must_not_contain": ["um ", "we we"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 20,
+      "max_chars": 50
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-en-003",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "like you know the API is like not responding right now",
+    "checks": {
+      "must_contain": ["API"],
+      "must_not_contain": ["like you know", "like not", "like like"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 15,
+      "max_chars": 40
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-en-004",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "the the the database connection keeps dropping",
+    "checks": {
+      "must_contain": ["database", "connection"],
+      "must_not_contain": ["the the"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 20,
+      "max_chars": 50
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-en-005",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "actually no wait scratch that we should use PostgreSQL not MySQL",
+    "checks": {
+      "must_contain": ["PostgreSQL"],
+      "must_not_contain": ["MySQL", "no wait", "scratch that", "actually"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 15,
+      "max_chars": 40
+    },
+    "judge_rubric": "The speaker corrected themselves to use PostgreSQL. Output must only reflect PostgreSQL as the chosen database."
+  },
+  {
+    "id": "stutter-en-006",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "I mean the deadline is Friday no wait it's Thursday",
+    "checks": {
+      "must_contain": ["Thursday"],
+      "must_not_contain": ["Friday", "no wait", "I mean"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 15,
+      "max_chars": 35
+    },
+    "judge_rubric": "Output must reflect the corrected deadline of Thursday, not Friday."
+  },
+  {
+    "id": "stutter-en-007",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "we have like twenty employees you know working on this product",
+    "checks": {
+      "must_contain": ["20", "product"],
+      "must_not_contain": ["like ", "you know"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 20,
+      "max_chars": 50
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-en-008",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "the server has um thirty-two cores and uh sixty-four gigs of RAM",
+    "checks": {
+      "must_contain": ["32", "64"],
+      "must_not_contain": ["um ", "uh "],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 25,
+      "max_chars": 55
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-en-009",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "the team is actually actually really good at this",
+    "checks": {
+      "must_contain": ["team"],
+      "must_not_contain": ["actually actually"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 15,
+      "max_chars": 40
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-en-010",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "the response time was five hundred milliseconds no wait it was two hundred",
+    "checks": {
+      "must_contain": ["200ms"],
+      "must_not_contain": ["500ms", "no wait", "five hundred"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 15,
+      "max_chars": 40
+    },
+    "judge_rubric": "The corrected response time is 200ms, not 500ms. Output must reflect the final corrected value."
+  },
+  {
+    "id": "stutter-en-011",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "I I want to say that the deployment went smoothly",
+    "checks": {
+      "must_contain": ["deployment"],
+      "must_not_contain": ["I I"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 20,
+      "max_chars": 50
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-en-012",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "so so the main issue is memory leaks in the service",
+    "checks": {
+      "must_contain": ["memory leaks", "service"],
+      "must_not_contain": ["so so"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 20,
+      "max_chars": 50
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-en-013",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "we're talking three things first performance second security and third uh actually just two things performance and security",
+    "checks": {
+      "must_contain": ["performance", "security"],
+      "must_not_contain": ["three things", "third"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 20,
+      "max_chars": 60
+    },
+    "judge_rubric": "The speaker corrected from 3 items to 2. Output must list only performance and security, not reference a third item."
+  },
+  {
+    "id": "stutter-en-014",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "it's not the frontend issue it's the backend issue",
+    "checks": {
+      "must_contain": ["backend"],
+      "must_not_contain": ["not the frontend", "frontend issue"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 15,
+      "max_chars": 40
+    },
+    "judge_rubric": "The 'not A it's B' structure should result in only B: the issue is with the backend."
+  },
+  {
+    "id": "stutter-en-015",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "uh the budget is like two million dollars you know for this quarter",
+    "checks": {
+      "must_contain": ["$2,000,000", "$2M", "2 million"],
+      "must_not_contain": ["uh ", "like ", "you know"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 20,
+      "max_chars": 50
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-en-016",
+    "strategy_note": "phonetic-then-spell",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "we use Gee Queue Ell, that's G-Q-L, for our data layer",
+    "checks": {
+      "must_contain": ["GQL"],
+      "must_not_contain": ["Gee Queue Ell", "G-Q-L"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 15,
+      "max_chars": 40
+    },
+    "judge_rubric": "The phonetic 'Gee Queue Ell' and 'G-Q-L' both resolve to 'GQL'. Output should use 'GQL' naturally."
+  },
+  {
+    "id": "stutter-en-017",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "the error rate dropped to fifteen percent no scratch that five percent",
+    "checks": {
+      "must_contain": ["5%"],
+      "must_not_contain": ["15%", "no scratch that", "scratch that"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 15,
+      "max_chars": 40
+    },
+    "judge_rubric": "The corrected error rate is 5%, not 15%. Output must show only the final corrected figure."
+  },
+  {
+    "id": "stutter-en-018",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "you know we should you know document this API you know",
+    "checks": {
+      "must_contain": ["document", "API"],
+      "must_not_contain": ["you know"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 15,
+      "max_chars": 40
+    },
+    "judge_rubric": null
+  },
+  {
+    "id": "stutter-en-019",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "the meeting is at room three oh four, no wait, room four oh three",
+    "checks": {
+      "must_contain": ["403"],
+      "must_not_contain": ["304", "no wait"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 15,
+      "max_chars": 40
+    },
+    "judge_rubric": "The speaker corrected the room from 304 to 403. Output must reflect room 403."
+  },
+  {
+    "id": "stutter-en-020",
+    "scenario": "stutter",
+    "language": "en",
+    "text_structuring": false,
+    "input": "um the the app supports iOS Android and um web right now",
+    "checks": {
+      "must_contain": ["iOS", "Android", "web"],
+      "must_not_contain": ["um ", "the the"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 20,
+      "max_chars": 50
+    },
+    "judge_rubric": null
   }
 ]
