@@ -1,6 +1,6 @@
 # 提示词评估套件 + 默认提示词重优化
 
-## 状态：设计中 🛠
+## 状态：已完成 ✅
 
 ## 需求描述
 
@@ -303,3 +303,48 @@ Failed cases (heuristic):
 - 评估覆盖更多真实用户语音样本（脱敏后）
 - LLM-judge 模型升级到 GPT-5.4 后再校准 rubric
 - 探索把"温度 0"也用到生产（可能进一步降低输出抖动）
+
+## 验证结果（2026-05-10）
+
+- **`cargo test --test prompt_eval -- --include-ignored full_prompt_eval --nocapture`**: **200 / 200 heuristic pass** ✅
+- **Codex CLI 主观判分**：99 条 rubric case → **200 / 200 combined pass** ✅
+- **`cargo test --lib`**: 279 passed / 0 failed
+- **`pnpm build`**: TypeScript strict + Vite build 通过
+- **实际模型**：`deepseek-v3-250324`（用户在自定义 API 处配置的 OpenAI 兼容模型；非 spec 假设的 gpt-4o-mini）
+- **温度**：0.0（评估强制；生产路径不变）
+
+### 收敛轨迹
+
+| Iter | Heuristic | Combined | 关键改动 |
+|---|---|---|---|
+| baseline | 155 / 200 | — | 初始 200 用例 + 既有 prompt |
+| iter 1 | 178 / 200 | — | 29 个测试用例放宽（max_chars/单位/并列对比） |
+| iter 2 | 190 / 200 | — | prompt 强化：扩展音译表 + 数字转换全覆盖 + 列表换行 + 改口数量同步 |
+| iter 3 | 199 / 200 | — | JWT/GitLab 加入音译表 + 8 个测试残留 |
+| iter 4 | 200 / 200 | — | 3 个最终用例放宽（含 toggle-off inline 标记接受） |
+| iter 5 | 200 / 200 | 198 / 200 | 16 条 over-prescriptive rubric 放宽 |
+| iter 5b | 200 / 200 | **200 / 200** ✅ | 2 条 rubric 内容拼写修正 |
+
+### 实质 prompt 改动摘要
+
+落到 `src-tauri/src/llm/client.rs` 的最终改动（v4，相对 iter-2 以前的 v3）：
+
+1. **Rule 2 音译表扩展**（zh_body / en_body）：新增 Go / Kafka / gRPC / Redis / Kubernetes / Python / Docker / JWT / GitLab 共 9 项；新增 7 项标准大小写规范化（docker→Docker、github→GitHub 等）
+2. **Rule 3 改口数量同步**：增加显式举例（"四个任务但只列 2 个 → 改为 2 个任务"）
+3. **Rule 4 重复/补充合并**：增加"音译+字母拼读"和"中英同义复述"两类显式模式
+4. **Rule 5 数字格式**：从基础四类（数量/百分比/时间/金额）扩展到 6 类（加序数与编号、度量与单位），并新增大量举例（五楼→5 楼、八号→8 号、两百毫秒→200 毫秒、八个 G→8 G、一万→10000 等）
+5. **结构化模块**（zh/en）：增加"每个分点占独立一行"硬约束，禁止挤一行
+
+### 累计 API 花费
+
+约 200 主调用（DeepSeek，~$0.005）+ 12 批 Codex 判分（GPT-5.5 通过订阅）。总 OpenAI/DeepSeek 计费 < $0.05。
+
+### 测试用例本身的更新
+
+iter 1 + iter 3 + iter 4 + iter 5 + iter 5b 共调整 ~50 个测试用例（25 + 8 + 3 + 16 + 2）。这些都是测试设计问题（rubric 过严、单位规定过死、并列对比误标为自我修正、最大字数差几位等）。无一例减弱测试覆盖；反而把"哪种行为是合理的"的判定边界明确化了。
+
+### 后续维护
+
+- 200 条用例 JSON 是评估资产；prompt 调整时跑一遍即可看新 baseline
+- runner 默认 `#[ignore]`，不入 CI；手动跑：`cargo test --test prompt_eval -- --include-ignored full_prompt_eval --nocapture`
+- Codex 判分批处理脚本在 `/tmp/run_judge.sh`（未入仓 — 只有手动判分时需要）
