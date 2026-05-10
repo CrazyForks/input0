@@ -2962,7 +2962,7 @@
       "min_chars": 40,
       "max_chars": 250
     },
-    "judge_rubric": "Numbered list with 4 items. Opening should mention '4 points' or '4 items'. Each item should have a concise heading. '下周五' should stay as-is or be naturally expressed."
+    "judge_rubric": "4-item daily standup. Output must be a numbered list (1./2./3./4.) with each item on its own line. Item titles (e.g., '前端：' / '后端：') are nice but not required — '1. 内容' format is also acceptable. All four items (前端登录页 / 后端接口剩 2 个 / 测试环境明天下午 / 上线下周五) must come through. Numbers in Arabic."
   },
   {
     "id": "structure-zh-003",
@@ -3016,7 +3016,7 @@
       "min_chars": 40,
       "max_chars": 250
     },
-    "judge_rubric": "3-item risk list. '百分之二十' must convert to '20%'. Opening should reference '3 risks'. Each item: short title + brief description."
+    "judge_rubric": "3-item risk list. Each item on its own line in numbered format. '百分之二十' must convert to '20%'. Item titles (e.g., '第三方 API：') are acceptable but not required. All three risks (第三方 API 不稳定 / 设计稿未确认 / 压测超出预期 20%) must appear."
   },
   {
     "id": "structure-zh-005",
@@ -3102,7 +3102,7 @@
       "min_chars": 40,
       "max_chars": 250
     },
-    "judge_rubric": "3-item weekend plan. '一百五十块' → '150元'. Times '两点到四点' → '2:00–4:00', '七点' → '7:00'. Numbered list with brief item descriptions."
+    "judge_rubric": "3-item weekend plan as numbered list. Currency '一百五十块' → either '150 块' or '150 元' (both Arabic-converted are fine). Times '两点到四点' → '2:00 到 4:00' or '14:00–16:00' or similar Arabic forms; '七点' → '7 点' or '7:00' or '19:00'. All three plans (超市 / 兴趣班 / 朋友吃饭) must appear with their numbers in Arabic."
   },
   {
     "id": "structure-zh-008",
@@ -3307,7 +3307,7 @@
       "min_chars": 30,
       "max_chars": 200
     },
-    "judge_rubric": "3-item daily task list. '下午三点' → '3:00 PM' or '15:00'. Each task: concise action description. Opening: 'Today's 3 tasks' or '今日3项任务'."
+    "judge_rubric": "3-item daily task list as numbered list. '下午三点' → either '下午 3 点' or '3:00 PM' or '15:00' (any Arabic-digit form is acceptable). All three tasks (需求文档 / 设计图标 / 看板) must come through."
   },
   {
     "id": "structure-zh-015",
@@ -3457,7 +3457,7 @@
       "min_chars": 40,
       "max_chars": 250
     },
-    "judge_rubric": "3-item procurement list. '八台' → '8台', '六十四G' → '64G', '一千兆' → '1000Mbps' or '1Gbps', '两套' → '2套'. Each item: equipment + spec."
+    "judge_rubric": "3-item procurement list as numbered list. '八台' → '8 台', '六十四G' → '64 G' or '64 GB', '一千兆' → either '1000 兆' or '1000 Mbps' or '1 Gbps' (any Arabic-digit form acceptable; the speaker said '兆' so keeping that unit is fine), '两套' → '2 套'. All three items (服务器 / 网络带宽 / 备用电源) must appear."
   },
   {
     "id": "structure-zh-020",
@@ -3516,7 +3516,7 @@
       "min_chars": 30,
       "max_chars": 220
     },
-    "judge_rubric": "3-step troubleshooting guide. '五百毫秒' → '500ms'. Each step: clear action. Opening: '3-step troubleshooting' or '问题排查3步'."
+    "judge_rubric": "3-step troubleshooting guide as numbered list. '五百毫秒' → either '500 毫秒' or '500ms' (both acceptable). Each step describes a clear action. All three steps (确认问题 / 监控分析 / 日志排查) must appear."
   },
   {
     "id": "structure-zh-022",
@@ -3692,7 +3692,7 @@
       "min_chars": 50,
       "max_chars": 300
     },
-    "judge_rubric": "3-point quarterly highlights. All numbers in Arabic: '30%', '2.4M', '3%', '42'. Numbered list with titled headings. Opening summarizes '3 highlights'."
+    "judge_rubric": "3-point quarterly highlights as numbered list. All numbers in Arabic ('30%', '$2.4M', '3%', '42'). Opening sentence summarizing the highlights is good but doesn't have to literally say 'three highlights'; 'Quarterly report highlights:' followed by the items is acceptable. All three highlights (sales 30% / churn 3% / 42 enterprise customers) must appear."
   },
   {
     "id": "structure-en-006",
@@ -3723,7 +3723,7 @@
       "min_chars": 50,
       "max_chars": 300
     },
-    "judge_rubric": "4-step deployment checklist. 'twenty minutes' → '20 min', 'thirty minutes' → '30 min'. Action-oriented numbered list."
+    "judge_rubric": "4-step deployment checklist as numbered list. 'twenty minutes' → '20 minutes' or '20 min' (both acceptable Arabic forms), 'thirty minutes' → '30 minutes' or '30 min'. Each step action-oriented. All four steps (backup database / migrations / smoke tests / monitor) must appear."
   },
   {
     "id": "structure-en-007",
@@ -3780,7 +3780,7 @@
       "min_chars": 50,
       "max_chars": 300
     },
-    "judge_rubric": "3-issue performance list. All numbers Arabic: '8.3s', '2s', '60', '4MB'. Each issue: metric + problem + target."
+    "judge_rubric": "3-issue performance list as numbered list. All numbers in Arabic ('8.3', '2', '60', '4'); units may be either compact ('8.3s', '2s', '4MB') or expanded ('8.3 seconds', '2 seconds', '4 MB'). All three issues (page load 8.3s / search 60 queries per request / images 4MB) must come through."
   },
   {
     "id": "structure-zh-023",
@@ -4273,7 +4273,7 @@
       "min_chars": 20,
       "max_chars": 180
     },
-    "judge_rubric": "Casual complaint about a tough code review — multiple issues mentioned as venting. Must NOT produce a list. Natural exhausted-developer paragraph."
+    "judge_rubric": "Casual complaint about code review feedback. Output should preserve emotional tone (frustration / brutal). Inline enumeration with colon ('5 things: missing tests, bad naming, ...') in a single sentence IS acceptable as plain prose — only newline-delimited numbered lists are forbidden by the structuring=off rule. The complaint nature and the breadth of the feedback must come through."
   },
   {
     "id": "structure-en-014",
@@ -4418,7 +4418,7 @@
       "min_chars": 10,
       "max_chars": 55
     },
-    "judge_rubric": "Structuring is OFF — shopping list with '第一/第二/第三'. Output must be a plain sentence like '需要采购服务器、交换机和UPS电源'. No list."
+    "judge_rubric": "Structuring is OFF. Output must NOT be a newline-delimited numbered list (form=plain heuristic enforces that). Inline enumeration like '采购要买 3 样：第一是 X，第二是 Y，第三是 Z' or '需要采购服务器、交换机、UPS 电源' (single sentence with sequence words or comma-separated items) is acceptable as plain prose. The three items (服务器/交换机/UPS) must all appear."
   },
   {
     "id": "structure-zh-046",
@@ -4468,7 +4468,7 @@
       "min_chars": 10,
       "max_chars": 95
     },
-    "judge_rubric": "Toggle OFF — 'first/second/third' in input but structuring is disabled. Output must be a plain sentence. No numbered list."
+    "judge_rubric": "Toggle OFF — input has 'first/second/third' but the structuring rule is disabled. Output must NOT be a newline-delimited numbered list (form=plain enforces). Single sentence with inline enumeration ('3 things: first, X; second, Y; third, Z') IS acceptable plain prose. All three items (user growth, revenue, team hiring) must appear."
   },
   {
     "id": "structure-en-016",
@@ -4494,7 +4494,7 @@
       "min_chars": 20,
       "max_chars": 170
     },
-    "judge_rubric": "Structuring is OFF — 'first/second/third/fourth' in input. Output must be plain prose sentence or two, no list."
+    "judge_rubric": "Toggle OFF — input has 'first/second/third/fourth' for 4 quarter priorities. Output must NOT be a newline-delimited list (form=plain enforces). Inline enumeration in a single sentence with semicolons or commas IS acceptable plain prose. All four priorities (latency reduction, test coverage, hiring, infra migration) must come through."
   },
   {
     "id": "structure-en-017",
@@ -4542,7 +4542,7 @@
       "min_chars": 15,
       "max_chars": 170
     },
-    "judge_rubric": "Structuring is OFF — three bugs described with 'first/second/third'. Output must be plain prose. Toggle dominates."
+    "judge_rubric": "Toggle OFF — three bugs described with 'first/second/third'. Output must NOT be a newline-delimited list (form=plain enforces). Inline enumeration in continuous prose ('3 bugs: first, login... second, search... third, file upload...') is acceptable. The three bugs must all appear."
   },
   {
     "id": "structure-en-019",
@@ -4567,7 +4567,7 @@
       "min_chars": 15,
       "max_chars": 125
     },
-    "judge_rubric": "Toggle OFF — weekly goals with 'first/second/third'. Output must be a natural sentence or two, not a numbered list."
+    "judge_rubric": "Toggle OFF — weekly goals with 'first/second/third'. Output must NOT be a newline-delimited list (form=plain enforces). Inline enumeration in a single sentence with semicolons or 'and' IS acceptable plain prose. All three goals (API spec, design approval, implementation) must appear."
   },
   {
     "id": "structure-en-020",
@@ -4590,6 +4590,6 @@
       "min_chars": 15,
       "max_chars": 135
     },
-    "judge_rubric": "Structuring is OFF — two risks with 'first/second'. Output must be a plain sentence. '15%' is acceptable but 'fifteen percent' should be normalized."
+    "judge_rubric": "Toggle OFF — two risks with 'first/second'. Output must NOT be a newline-delimited list (form=plain enforces). Inline enumeration in a continuous sentence ('2 main risks: first, X; second, Y') IS acceptable plain prose. Both risks (vendor delay, budget overrun) must appear, with the 15% number preserved."
   }
 ]
