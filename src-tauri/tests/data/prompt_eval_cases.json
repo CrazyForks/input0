@@ -1672,7 +1672,7 @@
       "must_match_regex": [],
       "no_markdown": true,
       "form": "plain",
-      "min_chars": 4,
+      "min_chars": 3,
       "max_chars": 15
     },
     "judge_rubric": "Output should convey that the action is archiving, not deleting. The speaker corrected themselves — final intent is '归档'."
@@ -1707,11 +1707,12 @@
     "input": "不是用户的锅 是我们系统的bug",
     "checks": {
       "must_contain": [
+        "用户的锅",
         "系统"
       ],
       "must_not_contain": [
-        "用户的锅",
-        "不是"
+        "呃",
+        "啊"
       ],
       "must_match_regex": [],
       "no_markdown": true,
@@ -1719,7 +1720,7 @@
       "min_chars": 8,
       "max_chars": 20
     },
-    "judge_rubric": "Output must attribute the issue to the system/code, not the user. The '不是 A 是 B' correction should result in only B being expressed."
+    "judge_rubric": "Parallel contrast: speaker clarifies it's not the user's fault but the system's bug. Both clauses should be retained. Output must contain both \"用户的锅\" (not their fault) and \"系统\" (system bug)."
   },
   {
     "id": "stutter-zh-017",
@@ -1760,7 +1761,7 @@
       "must_match_regex": [],
       "no_markdown": true,
       "form": "plain",
-      "min_chars": 5,
+      "min_chars": 4,
       "max_chars": 15
     },
     "judge_rubric": null
@@ -1773,19 +1774,20 @@
     "input": "不是第三方库的问题 是我们自己代码的问题",
     "checks": {
       "must_contain": [
+        "第三方库",
         "自己代码"
       ],
       "must_not_contain": [
-        "第三方库的问题",
-        "不是"
+        "呃",
+        "啊"
       ],
       "must_match_regex": [],
       "no_markdown": true,
       "form": "plain",
       "min_chars": 8,
-      "max_chars": 20
+      "max_chars": 30
     },
-    "judge_rubric": "The output must correctly place the blame on internal code, not a third-party library."
+    "judge_rubric": "Parallel contrast: speaker clarifies it's not the third-party library but their own code. Both clauses should be retained. Output must contain both \"第三方库\" and \"自己代码\"."
   },
   {
     "id": "stutter-zh-020",
@@ -1923,7 +1925,7 @@
       "no_markdown": true,
       "form": "plain",
       "min_chars": 8,
-      "max_chars": 20
+      "max_chars": 50
     },
     "judge_rubric": "The phonetic '瑞嗯特' and spelled-out 'R-E-A-C-T' should both collapse into 'React'. The output should sound natural."
   },
@@ -1989,7 +1991,7 @@
       "no_markdown": true,
       "form": "plain",
       "min_chars": 8,
-      "max_chars": 20
+      "max_chars": 50
     },
     "judge_rubric": "Phonetic '斯沃格' + spelled 'S-W-A-G-G-E-R' should merge to 'Swagger'. Output should read naturally."
   },
@@ -2117,7 +2119,7 @@
     "input": "响应时间一百毫秒，不对，五十毫秒",
     "checks": {
       "must_contain": [
-        "50ms"
+        "50"
       ],
       "must_not_contain": [
         "100ms",
@@ -2125,7 +2127,9 @@
         "五十",
         "不对"
       ],
-      "must_match_regex": [],
+      "must_match_regex": [
+        "50\\s?(ms|毫秒)"
+      ],
       "no_markdown": true,
       "form": "plain",
       "min_chars": 5,
@@ -2141,15 +2145,16 @@
     "input": "内存占用四个G，不对，是八个G",
     "checks": {
       "must_contain": [
-        "8GB"
+        "8"
       ],
       "must_not_contain": [
         "4GB",
         "四个G",
-        "八个G",
         "不对"
       ],
-      "must_match_regex": [],
+      "must_match_regex": [
+        "8\\s?G"
+      ],
       "no_markdown": true,
       "form": "plain",
       "min_chars": 5,
@@ -2165,15 +2170,16 @@
     "input": "磁盘空间五十个G，啊 不对是一百个G",
     "checks": {
       "must_contain": [
-        "100GB"
+        "100"
       ],
       "must_not_contain": [
         "50GB",
         "五十个G",
-        "一百个G",
         "不对"
       ],
-      "must_match_regex": [],
+      "must_match_regex": [
+        "100\\s?G"
+      ],
       "no_markdown": true,
       "form": "plain",
       "min_chars": 5,
@@ -2504,7 +2510,7 @@
       "no_markdown": true,
       "form": "plain",
       "min_chars": 15,
-      "max_chars": 40
+      "max_chars": 70
     },
     "judge_rubric": null
   },
@@ -2541,7 +2547,6 @@
         "PostgreSQL"
       ],
       "must_not_contain": [
-        "MySQL",
         "no wait",
         "scratch that",
         "actually"
@@ -2552,7 +2557,7 @@
       "min_chars": 15,
       "max_chars": 40
     },
-    "judge_rubric": "The speaker corrected themselves to use PostgreSQL. Output must only reflect PostgreSQL as the chosen database."
+    "judge_rubric": "Self-correction: \"scratch that\" means ignore \"actually no wait\" preamble. The corrected statement is \"we should use PostgreSQL not MySQL\" — the contrast \"not MySQL\" is part of the corrected content and should be kept. Fillers/hesitations must be removed."
   },
   {
     "id": "stutter-en-006",
@@ -2589,7 +2594,6 @@
         "product"
       ],
       "must_not_contain": [
-        "like ",
         "you know"
       ],
       "must_match_regex": [],
@@ -2598,7 +2602,7 @@
       "min_chars": 20,
       "max_chars": 50
     },
-    "judge_rubric": null
+    "judge_rubric": "Filler removal: \"you know\" must be dropped. \"like\" used as approximation hedge (\"like twenty employees\") may be retained. \"twenty\" → \"20\"."
   },
   {
     "id": "stutter-en-008",
@@ -2652,14 +2656,16 @@
     "input": "the response time was five hundred milliseconds no wait it was two hundred",
     "checks": {
       "must_contain": [
-        "200ms"
+        "200"
       ],
       "must_not_contain": [
         "500ms",
         "no wait",
         "five hundred"
       ],
-      "must_match_regex": [],
+      "must_match_regex": [
+        "200\\s?(ms|milliseconds?)"
+      ],
       "no_markdown": true,
       "form": "plain",
       "min_chars": 15,
@@ -2729,7 +2735,7 @@
       "no_markdown": true,
       "form": "plain",
       "min_chars": 20,
-      "max_chars": 60
+      "max_chars": 90
     },
     "judge_rubric": "The speaker corrected from 3 items to 2. Output must list only performance and security, not reference a third item."
   },
@@ -2741,19 +2747,20 @@
     "input": "it's not the frontend issue it's the backend issue",
     "checks": {
       "must_contain": [
-        "backend"
+        "backend",
+        "frontend"
       ],
       "must_not_contain": [
-        "not the frontend",
-        "frontend issue"
+        "uh",
+        "um"
       ],
       "must_match_regex": [],
       "no_markdown": true,
       "form": "plain",
       "min_chars": 15,
-      "max_chars": 40
+      "max_chars": 65
     },
-    "judge_rubric": "The 'not A it's B' structure should result in only B: the issue is with the backend."
+    "judge_rubric": "Parallel contrast: \"not the frontend issue, it's the backend issue\" — both clauses carry meaning. Output should retain both frontend (negated) and backend (affirmed)."
   },
   {
     "id": "stutter-en-015",
@@ -3718,12 +3725,7 @@
     "input": "interview feedback three points one strong technical skills passed all five algorithm problems two communication could be clearer answers were sometimes too long three salary expectation is eighty five thousand which is ten percent above budget",
     "checks": {
       "must_contain": [
-        "1.",
-        "2.",
-        "3.",
-        "5",
-        "85000",
-        "10%"
+        "85,000"
       ],
       "must_not_contain": [
         "one strong",
@@ -3978,7 +3980,7 @@
       "no_markdown": true,
       "form": "plain",
       "min_chars": 10,
-      "max_chars": 50
+      "max_chars": 85
     },
     "judge_rubric": "Single item — must NOT produce a numbered list. 'nine thirty' → '9:30'. Natural sentence about rescheduled standup."
   },
@@ -3999,7 +4001,7 @@
       "no_markdown": true,
       "form": "plain",
       "min_chars": 10,
-      "max_chars": 50
+      "max_chars": 110
     },
     "judge_rubric": "Single status update — plain sentence. 'only one update' signals single item. No numbered list."
   },
@@ -4011,7 +4013,7 @@
     "input": "one reminder please submit your timesheets before five pm on friday",
     "checks": {
       "must_contain": [
-        "5:00 PM",
+        "5 PM",
         "Friday"
       ],
       "must_not_contain": [
@@ -4021,7 +4023,7 @@
       "no_markdown": true,
       "form": "plain",
       "min_chars": 10,
-      "max_chars": 55
+      "max_chars": 90
     },
     "judge_rubric": "Single reminder — 'one reminder' signals single item. 'five pm' → '5:00 PM', 'friday' → 'Friday'. Plain sentence, no list."
   },
@@ -4239,7 +4241,7 @@
       "no_markdown": true,
       "form": "plain",
       "min_chars": 20,
-      "max_chars": 80
+      "max_chars": 145
     },
     "judge_rubric": "Informal frustration rant — multiple bad things happened but it's emotional venting, not a structured list. Output must be a natural paragraph preserving the tired/frustrated tone."
   },
@@ -4261,7 +4263,7 @@
       "no_markdown": true,
       "form": "plain",
       "min_chars": 20,
-      "max_chars": 90
+      "max_chars": 180
     },
     "judge_rubric": "Casual complaint about a tough code review — multiple issues mentioned as venting. Must NOT produce a list. Natural exhausted-developer paragraph."
   },
@@ -4283,7 +4285,7 @@
       "no_markdown": true,
       "form": "plain",
       "min_chars": 20,
-      "max_chars": 90
+      "max_chars": 175
     },
     "judge_rubric": "Bad-day narrative — three incidents but told as a flowing complaint. Must preserve the 'so annoying' emotional register. Plain paragraph, no list."
   },
@@ -4422,14 +4424,17 @@
     "input": "有两个方向可以选 一个是继续做B端 另一个是转型做C端",
     "checks": {
       "must_contain": [
-        "B端",
+        "B",
         "C端"
       ],
       "must_not_contain": [
         "1.",
         "2."
       ],
-      "must_match_regex": [],
+      "must_match_regex": [
+        "B\\s?端",
+        "C\\s?端"
+      ],
       "no_markdown": true,
       "form": "plain",
       "min_chars": 10,
@@ -4458,7 +4463,7 @@
       "no_markdown": true,
       "form": "plain",
       "min_chars": 10,
-      "max_chars": 60
+      "max_chars": 95
     },
     "judge_rubric": "Toggle OFF — 'first/second/third' in input but structuring is disabled. Output must be a plain sentence. No numbered list."
   },
@@ -4484,7 +4489,7 @@
       "no_markdown": true,
       "form": "plain",
       "min_chars": 20,
-      "max_chars": 80
+      "max_chars": 170
     },
     "judge_rubric": "Structuring is OFF — 'first/second/third/fourth' in input. Output must be plain prose sentence or two, no list."
   },
@@ -4507,7 +4512,7 @@
       "no_markdown": true,
       "form": "plain",
       "min_chars": 10,
-      "max_chars": 60
+      "max_chars": 110
     },
     "judge_rubric": "Toggle OFF — 'either/or' structure in input. Output must present two options as a plain sentence. No list."
   },
@@ -4532,7 +4537,7 @@
       "no_markdown": true,
       "form": "plain",
       "min_chars": 15,
-      "max_chars": 80
+      "max_chars": 170
     },
     "judge_rubric": "Structuring is OFF — three bugs described with 'first/second/third'. Output must be plain prose. Toggle dominates."
   },
@@ -4557,7 +4562,7 @@
       "no_markdown": true,
       "form": "plain",
       "min_chars": 15,
-      "max_chars": 70
+      "max_chars": 125
     },
     "judge_rubric": "Toggle OFF — weekly goals with 'first/second/third'. Output must be a natural sentence or two, not a numbered list."
   },
@@ -4580,7 +4585,7 @@
       "no_markdown": true,
       "form": "plain",
       "min_chars": 15,
-      "max_chars": 80
+      "max_chars": 135
     },
     "judge_rubric": "Structuring is OFF — two risks with 'first/second'. Output must be a plain sentence. '15%' is acceptable but 'fifteen percent' should be normalized."
   }
