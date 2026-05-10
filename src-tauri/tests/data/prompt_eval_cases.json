@@ -1,0 +1,19 @@
+[
+  {
+    "id": "smoke-zh-001",
+    "scenario": "mixed",
+    "language": "zh",
+    "text_structuring": false,
+    "input": "我们用瑞嗯特做前端，然后通过诶辟爱调后端",
+    "checks": {
+      "must_contain": ["React", "API"],
+      "must_not_contain": ["瑞嗯特", "诶辟爱"],
+      "must_match_regex": [],
+      "no_markdown": true,
+      "form": "plain",
+      "min_chars": 5,
+      "max_chars": 100
+    },
+    "judge_rubric": null
+  }
+]
