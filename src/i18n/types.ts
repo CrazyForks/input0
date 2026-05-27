@@ -133,6 +133,9 @@ export interface Translations {
     hotkeyPermissionBannerTitle: string;
     hotkeyPermissionBannerBody: string;
     hotkeyPermissionBannerAction: string;
+    hotkeyFnGlobeBannerTitle: string;
+    hotkeyFnGlobeBannerBody: string;
+    hotkeyFnGlobeBannerAction: string;
     textStructuringLabel: string;
     textStructuringHint: string;
     sttModelTitle: string;

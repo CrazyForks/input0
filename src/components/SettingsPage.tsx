@@ -203,6 +203,7 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
   const focusValueRef = useRef<string>("");
   const [accessibilityGranted, setAccessibilityGranted] = useState<boolean | null>(null);
   const [micPermission, setMicPermission] = useState<string | null>(null);
+  const [fnUsageType, setFnUsageType] = useState<number | null>(null);
 
   const {
     updateAvailable,
@@ -228,9 +229,12 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
     invoke<string>("check_microphone_permission").then(setMicPermission).catch(() => {});
     loadInputDevices();
 
+    invoke<number | null>("get_fn_usage_type").then(setFnUsageType).catch(() => {});
+
     const recheckPermissions = () => {
       invoke<boolean>("check_accessibility_permission").then(setAccessibilityGranted).catch(() => {});
       invoke<string>("check_microphone_permission").then(setMicPermission).catch(() => {});
+      invoke<number | null>("get_fn_usage_type").then(setFnUsageType).catch(() => {});
     };
 
     // Use Tauri native window focus event — more reliable than DOM window.focus
@@ -389,6 +393,37 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
                           className="mt-2 rounded-md bg-[var(--theme-primary)] px-3 py-1 text-xs font-medium text-white hover:bg-[var(--theme-primary-hover)] transition-colors"
                         >
                           {t.settings.hotkeyPermissionBannerAction}
+                        </button>
+                      </div>
+                    )}
+                    {hotkey === "Fn" && fnUsageType !== null && fnUsageType !== 0 && (
+                      <div
+                        className="mb-4 rounded-md border p-3"
+                        style={{
+                          backgroundColor: "var(--theme-warning-bg)",
+                          borderColor: "var(--theme-warning-border)",
+                        }}
+                      >
+                        <p
+                          className="text-sm font-medium"
+                          style={{ color: "var(--theme-warning-text)" }}
+                        >
+                          {t.settings.hotkeyFnGlobeBannerTitle}
+                        </p>
+                        <p
+                          className="mt-1 text-xs"
+                          style={{ color: "var(--theme-warning-text)" }}
+                        >
+                          {t.settings.hotkeyFnGlobeBannerBody}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            await invoke("open_keyboard_settings");
+                          }}
+                          className="mt-2 rounded-md bg-[var(--theme-primary)] px-3 py-1 text-xs font-medium text-white hover:bg-[var(--theme-primary-hover)] transition-colors"
+                        >
+                          {t.settings.hotkeyFnGlobeBannerAction}
                         </button>
                       </div>
                     )}

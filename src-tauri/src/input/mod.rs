@@ -128,6 +128,34 @@ pub fn open_accessibility_settings() {
     accessibility::open_settings();
 }
 
+/// Read `com.apple.HIToolbox.AppleFnUsageType`. Returns:
+/// `0` = Do Nothing, `1` = Change Input Source, `2` = Show Emoji & Symbols,
+/// `3` = Start Dictation, `None` = preference unset or unreadable.
+#[cfg(target_os = "macos")]
+pub fn fn_usage_type() -> Option<i64> {
+    // Shell out to `defaults` rather than linking CFPreferences ourselves —
+    // the preference is owned by cfprefsd and the value matters, not how we
+    // fetch it. One-off UI check, perf is irrelevant.
+    let output = std::process::Command::new("defaults")
+        .args(["read", "com.apple.HIToolbox", "AppleFnUsageType"])
+        .output()
+        .ok()?;
+    if !output.status.success() {
+        return None;
+    }
+    String::from_utf8_lossy(&output.stdout).trim().parse().ok()
+}
+
+#[cfg(target_os = "macos")]
+pub fn open_keyboard_settings() {
+    // Newer URL targets the Settings app's Keyboard pane on macOS 13+.
+    // The legacy `com.apple.preference.keyboard` still resolves on older
+    // releases via the same `open` handler.
+    let _ = std::process::Command::new("open")
+        .arg("x-apple.systempreferences:com.apple.Keyboard-Settings.extension")
+        .spawn();
+}
+
 #[cfg(target_os = "macos")]
 pub fn check_microphone_permission() -> String {
     microphone::check_permission()
@@ -155,6 +183,14 @@ pub fn request_accessibility() -> bool {
 
 #[cfg(not(target_os = "macos"))]
 pub fn open_accessibility_settings() {}
+
+#[cfg(not(target_os = "macos"))]
+pub fn fn_usage_type() -> Option<i64> {
+    None
+}
+
+#[cfg(not(target_os = "macos"))]
+pub fn open_keyboard_settings() {}
 
 #[cfg(not(target_os = "macos"))]
 pub fn check_microphone_permission() -> String {
