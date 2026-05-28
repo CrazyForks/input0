@@ -203,7 +203,9 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
   const focusValueRef = useRef<string>("");
   const [accessibilityGranted, setAccessibilityGranted] = useState<boolean | null>(null);
   const [micPermission, setMicPermission] = useState<string | null>(null);
-  const [fnUsageType, setFnUsageType] = useState<number | null>(null);
+  // undefined = not yet fetched, null = key unset (macOS default applies = emoji),
+  // number = explicit value. Banner shows for null and any non-zero number.
+  const [fnUsageType, setFnUsageType] = useState<number | null | undefined>(undefined);
 
   const {
     updateAvailable,
@@ -229,12 +231,12 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
     invoke<string>("check_microphone_permission").then(setMicPermission).catch(() => {});
     loadInputDevices();
 
-    invoke<number | null>("get_fn_usage_type").then(setFnUsageType).catch(() => {});
+    invoke<number | null>("get_fn_usage_type").then(setFnUsageType).catch(() => setFnUsageType(null));
 
     const recheckPermissions = () => {
       invoke<boolean>("check_accessibility_permission").then(setAccessibilityGranted).catch(() => {});
       invoke<string>("check_microphone_permission").then(setMicPermission).catch(() => {});
-      invoke<number | null>("get_fn_usage_type").then(setFnUsageType).catch(() => {});
+      invoke<number | null>("get_fn_usage_type").then(setFnUsageType).catch(() => setFnUsageType(null));
     };
 
     // Use Tauri native window focus event — more reliable than DOM window.focus
@@ -396,7 +398,7 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
                         </button>
                       </div>
                     )}
-                    {hotkey === "Fn" && fnUsageType !== null && fnUsageType !== 0 && (
+                    {hotkey === "Fn" && fnUsageType !== undefined && fnUsageType !== 0 && (
                       <div
                         className="mb-4 rounded-md border p-3"
                         style={{
