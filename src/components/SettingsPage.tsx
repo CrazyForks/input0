@@ -231,12 +231,16 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
     invoke<string>("check_microphone_permission").then(setMicPermission).catch(() => {});
     loadInputDevices();
 
-    invoke<number | null>("get_fn_usage_type").then(setFnUsageType).catch(() => setFnUsageType(null));
+    invoke<number | null>("get_fn_usage_type")
+      .then((v) => { console.log("[get_fn_usage_type] resolved =", v); setFnUsageType(v); })
+      .catch((e) => { console.log("[get_fn_usage_type] rejected =", e); setFnUsageType(null); });
 
     const recheckPermissions = () => {
       invoke<boolean>("check_accessibility_permission").then(setAccessibilityGranted).catch(() => {});
       invoke<string>("check_microphone_permission").then(setMicPermission).catch(() => {});
-      invoke<number | null>("get_fn_usage_type").then(setFnUsageType).catch(() => setFnUsageType(null));
+      invoke<number | null>("get_fn_usage_type")
+        .then((v) => { console.log("[get_fn_usage_type recheck] resolved =", v); setFnUsageType(v); })
+        .catch((e) => { console.log("[get_fn_usage_type recheck] rejected =", e); setFnUsageType(null); });
     };
 
     // Use Tauri native window focus event — more reliable than DOM window.focus

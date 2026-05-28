@@ -136,14 +136,28 @@ pub fn fn_usage_type() -> Option<i64> {
     // Shell out to `defaults` rather than linking CFPreferences ourselves —
     // the preference is owned by cfprefsd and the value matters, not how we
     // fetch it. One-off UI check, perf is irrelevant.
-    let output = std::process::Command::new("defaults")
+    let result = std::process::Command::new("defaults")
         .args(["read", "com.apple.HIToolbox", "AppleFnUsageType"])
-        .output()
-        .ok()?;
-    if !output.status.success() {
-        return None;
+        .output();
+    match result {
+        Ok(output) => {
+            let stdout = String::from_utf8_lossy(&output.stdout).trim().to_string();
+            let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
+            let parsed = if output.status.success() { stdout.parse().ok() } else { None };
+            eprintln!(
+                "[fn_usage_type] status={:?} stdout={:?} stderr={:?} parsed={:?}",
+                output.status.code(),
+                stdout,
+                stderr,
+                parsed
+            );
+            parsed
+        }
+        Err(e) => {
+            eprintln!("[fn_usage_type] spawn failed: {}", e);
+            None
+        }
     }
-    String::from_utf8_lossy(&output.stdout).trim().parse().ok()
 }
 
 #[cfg(target_os = "macos")]
