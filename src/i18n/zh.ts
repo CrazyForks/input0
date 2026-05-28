@@ -132,6 +132,7 @@ export const zh: Translations = {
     hotkeyFnGlobeBannerTitle: "请关闭 macOS 的 Fn 键默认行为",
     hotkeyFnGlobeBannerBody: "短按 Fn 时，macOS 会触发表情符号 / 输入法切换 / 听写。这一行为在系统层独立派发，应用无法拦截。请在「系统设置 → 键盘 → 键盘快捷键 → 修饰键」里把「按下 🌐 键时」改为「无操作」。",
     hotkeyFnGlobeBannerAction: "打开系统设置 → 键盘",
+    hotkeyFnGlobeBannerDismiss: "忽略",
     textStructuringLabel: "文本结构化",
     textStructuringHint: "启用后，AI 会自动添加换行、列表和段落格式",
     sttModelTitle: "语音识别模型",

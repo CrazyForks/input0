@@ -136,6 +136,7 @@ export interface Translations {
     hotkeyFnGlobeBannerTitle: string;
     hotkeyFnGlobeBannerBody: string;
     hotkeyFnGlobeBannerAction: string;
+    hotkeyFnGlobeBannerDismiss: string;
     textStructuringLabel: string;
     textStructuringHint: string;
     sttModelTitle: string;

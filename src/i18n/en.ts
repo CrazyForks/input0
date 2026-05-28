@@ -132,6 +132,7 @@ export const en: Translations = {
     hotkeyFnGlobeBannerTitle: "Disable the macOS Globe key shortcut",
     hotkeyFnGlobeBannerBody: "A short tap on Fn / 🌐 makes macOS show the Emoji picker, change input source, or start Dictation. That gesture is dispatched by the system before any app can intercept it. Open System Settings → Keyboard → Keyboard Shortcuts → Modifier Keys, and set \"Press 🌐 key to\" to \"Do Nothing\".",
     hotkeyFnGlobeBannerAction: "Open Keyboard Settings",
+    hotkeyFnGlobeBannerDismiss: "Dismiss",
     textStructuringLabel: "Text Structuring",
     textStructuringHint: "When enabled, AI auto-formats with line breaks, lists, and paragraphs",
     sttModelTitle: "Speech Recognition Model",
