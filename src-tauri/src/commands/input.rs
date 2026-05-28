@@ -116,3 +116,13 @@ pub fn request_microphone_permission() {
 pub fn open_microphone_settings() {
     input::open_microphone_settings()
 }
+
+#[command]
+pub fn get_fn_usage_type() -> Option<i64> {
+    input::fn_usage_type()
+}
+
+#[command]
+pub fn open_keyboard_settings() {
+    input::open_keyboard_settings();
+}

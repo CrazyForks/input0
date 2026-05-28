@@ -64,6 +64,12 @@ Tap 回调返回约定：
 - Fn → 亮度 / 音量等功能行按键会被吞
 - 任意修饰键 → 该键参与的组合键（如 `⌥+Tab` 这种）在按下阶段可能受影响，需要手动验证
 
+### Fn 短按手势的特殊处理（macOS Globe 键 emoji / 听写 / 输入法切换）
+
+macOS 的「按下 🌐 键时」行为（System Settings → 键盘 → 键盘快捷键 → 修饰键 → `AppleFnUsageType`）由 WindowServer 直接订阅 IOHID 事件并派发，**不走 `kCGEventFlagsChanged` 流**。验证过：把 CGEventTap 放在 `HidEventTap` 层一样拦不住——长按 Fn 录音不受影响（press/release 的 flagsChanged 被正常消费），但短按 Fn 仍会触发 emoji picker。
+
+解决方式：**引导横幅**。当用户把热键设为 Fn 时，Settings 页读取 `AppleFnUsageType`；如果不是 0（Do Nothing），显示警告横幅 + 「打开系统设置 → 键盘」按钮，由用户手动改成 "Do Nothing"。Rust 端通过 `defaults read com.apple.HIToolbox AppleFnUsageType` 取值（命令 `get_fn_usage_type`），通过 `open x-apple.systempreferences:com.apple.Keyboard-Settings.extension` 跳转（命令 `open_keyboard_settings`）。横幅在 Settings 窗口重新聚焦时复查一次，用户从系统设置改回来后会自动消失。
+
 ### 线程模型
 
 CGEventTap 必须挂在 `CFRunLoop`。方案：

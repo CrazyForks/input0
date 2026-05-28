@@ -203,6 +203,13 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
   const focusValueRef = useRef<string>("");
   const [accessibilityGranted, setAccessibilityGranted] = useState<boolean | null>(null);
   const [micPermission, setMicPermission] = useState<string | null>(null);
+  // undefined = not yet fetched, null = key unset (macOS default applies = emoji),
+  // number = explicit value. Banner shows for null and any non-zero number.
+  const [fnUsageType, setFnUsageType] = useState<number | null | undefined>(undefined);
+  const FN_GLOBE_DISMISS_KEY = "input0:fnGlobeBannerDismissed";
+  const [fnGlobeBannerDismissed, setFnGlobeBannerDismissed] = useState<boolean>(
+    () => localStorage.getItem(FN_GLOBE_DISMISS_KEY) === "1"
+  );
 
   const {
     updateAvailable,
@@ -228,9 +235,12 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
     invoke<string>("check_microphone_permission").then(setMicPermission).catch(() => {});
     loadInputDevices();
 
+    invoke<number | null>("get_fn_usage_type").then(setFnUsageType).catch(() => setFnUsageType(null));
+
     const recheckPermissions = () => {
       invoke<boolean>("check_accessibility_permission").then(setAccessibilityGranted).catch(() => {});
       invoke<string>("check_microphone_permission").then(setMicPermission).catch(() => {});
+      invoke<number | null>("get_fn_usage_type").then(setFnUsageType).catch(() => setFnUsageType(null));
     };
 
     // Use Tauri native window focus event — more reliable than DOM window.focus
@@ -390,6 +400,49 @@ export function SettingsPage({ onToast, scrollToSection, onScrollComplete }: Set
                         >
                           {t.settings.hotkeyPermissionBannerAction}
                         </button>
+                      </div>
+                    )}
+                    {hotkey === "Fn" && fnUsageType !== undefined && fnUsageType !== 0 && !fnGlobeBannerDismissed && (
+                      <div
+                        className="mb-4 rounded-md border p-3"
+                        style={{
+                          backgroundColor: "var(--theme-warning-bg)",
+                          borderColor: "var(--theme-warning-border)",
+                        }}
+                      >
+                        <p
+                          className="text-sm font-medium"
+                          style={{ color: "var(--theme-warning-text)" }}
+                        >
+                          {t.settings.hotkeyFnGlobeBannerTitle}
+                        </p>
+                        <p
+                          className="mt-1 text-xs"
+                          style={{ color: "var(--theme-warning-text)" }}
+                        >
+                          {t.settings.hotkeyFnGlobeBannerBody}
+                        </p>
+                        <div className="mt-2 flex items-center gap-3">
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              await invoke("open_keyboard_settings");
+                            }}
+                            className="rounded-md bg-[var(--theme-primary)] px-3 py-1 text-xs font-medium text-[var(--theme-on-primary)] hover:opacity-90 transition-opacity"
+                          >
+                            {t.settings.hotkeyFnGlobeBannerAction}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              localStorage.setItem(FN_GLOBE_DISMISS_KEY, "1");
+                              setFnGlobeBannerDismissed(true);
+                            }}
+                            className="text-xs font-medium text-[var(--theme-on-surface-variant)] hover:text-[var(--theme-on-surface)] transition-colors"
+                          >
+                            {t.settings.hotkeyFnGlobeBannerDismiss}
+                          </button>
+                        </div>
                       </div>
                     )}
                     <div className="flex items-center justify-between">

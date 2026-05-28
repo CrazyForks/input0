@@ -732,6 +732,8 @@ pub fn run() {
             commands::input::check_microphone_permission,
             commands::input::request_microphone_permission,
             commands::input::open_microphone_settings,
+            commands::input::get_fn_usage_type,
+            commands::input::open_keyboard_settings,
             commands::audio::list_input_devices,
             commands::audio::set_input_device,
             commands::audio::start_recording,
